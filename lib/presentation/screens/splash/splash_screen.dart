@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'splash_controller.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_strings.dart';
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    Get.put(SplashController());
+    final width = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/logo.png',
+              width: width * 0.5,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              AppStrings.appName,
+              style: TextStyle(
+                fontSize: width * 0.08,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+                letterSpacing: 1.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
