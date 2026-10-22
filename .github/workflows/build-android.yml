@@ -9,9 +9,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: build-android-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -29,21 +34,24 @@ jobs:
 
       - run: flutter pub get
 
-      - name: Build release APK (per ABI + universal)
-        run: |
-          flutter build apk --release --split-per-abi
-          flutter build apk --release
+      # Single universal release APK (works on all devices).
+      - name: Build release APK
+        run: flutter build apk --release --build-number=${{ github.run_number }}
 
-      - name: Upload APKs as workflow artifact
+      - name: Rename APK
+        run: mv build/app/outputs/flutter-apk/app-release.apk taksh-delivery-app.apk
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: taksh-delivery-apk
-          path: build/app/outputs/flutter-apk/*.apk
+          name: taksh-delivery-app
+          path: taksh-delivery-app.apk
           retention-days: 30
+          if-no-files-found: error
 
       - name: Publish GitHub Release (tags only)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: build/app/outputs/flutter-apk/*.apk
+          files: taksh-delivery-app.apk
           generate_release_notes: true

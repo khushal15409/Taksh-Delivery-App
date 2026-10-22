@@ -17,10 +17,10 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Build & Download (CI)
 
-APKs are built automatically by GitHub Actions (`.github/workflows/build-android.yml`).
+GitHub Actions (`.github/workflows/build-android.yml`) builds a single release APK, `taksh-delivery-app.apk`.
 
-- **Every push to `main`**: GitHub → Actions → latest run → Artifacts → `taksh-delivery-apk`.
-- **Release download link**: `git tag v1.0.0 && git push origin v1.0.0` → APKs appear under GitHub → Releases.
+- **Every push to `main`**: GitHub → Actions → latest run → Artifacts → `taksh-delivery-app` (zip containing one APK).
+- **Release link**: `git tag v1.0.0 && git push origin v1.0.0` → the APK appears under GitHub → Releases (direct download, no zip).
 - **Manual**: Actions → "Build Android APK" → Run workflow.
 
-Note: release builds are currently signed with the debug key. Add a real keystore before publishing to Play Store.
+No `.env` file is needed. Release builds are signed with the debug key; add a real keystore before publishing to Play Store.
