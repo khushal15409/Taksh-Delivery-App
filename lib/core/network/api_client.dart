@@ -42,7 +42,7 @@ class ApiClient {
           )
           .timeout(timeout);
       _logResponse(response);
-      return _processResponse(response);
+      return _processResponse(response, token: token);
     } on SocketException catch (e) {
       return {
         'success': false,
@@ -103,7 +103,7 @@ class ApiClient {
       final streamedResponse = await request.send().timeout(timeout);
       final response = await http.Response.fromStream(streamedResponse);
       _logResponse(response);
-      return _processResponse(response);
+      return _processResponse(response, token: token);
     } on SocketException catch (e) {
       return {
         'success': false,
@@ -137,7 +137,7 @@ class ApiClient {
             )
             .timeout(timeout);
         _logResponse(response);
-        return _processResponse(response);
+        return _processResponse(response, token: token);
       } on SocketException catch (e) {
         return {
           'success': false,
@@ -163,7 +163,9 @@ class ApiClient {
     }
   }
 
-  dynamic _processResponse(http.Response response) {
+  bool _isHandlingUnauthorized = false;
+
+  dynamic _processResponse(http.Response response, {String? token}) {
     dynamic body;
     try {
       body = jsonDecode(response.body);
@@ -174,9 +176,7 @@ class ApiClient {
 
     if (response.statusCode >= 200 && response.statusCode < 500) {
       if (response.statusCode == 401) {
-        // Global Unauthorized Handling
-        Get.find<SessionService>().clearSession();
-        Get.offAllNamed(AppRoutes.login);
+        _handleUnauthorized(token);
         return {'success': false, 'message': "SESSION_EXPIRED"};
       }
       return body;
@@ -186,6 +186,26 @@ class ApiClient {
           : 'Server Error (${response.statusCode})';
       return {'success': false, 'message': errorMsg};
     }
+  }
+
+  /// Logs the user out only when the server rejected the live session token.
+  /// Requests sent without a token, with a stale token (the user already logged
+  /// in again) or with the offline demo token must not wipe a valid session.
+  void _handleUnauthorized(String? requestToken) {
+    if (requestToken == null || requestToken.isEmpty) return;
+    if (!Get.isRegistered<SessionService>()) return;
+
+    final session = Get.find<SessionService>();
+    if (session.token != requestToken) return;
+    if (session.isMockSession) return;
+    if (_isHandlingUnauthorized) return;
+
+    _isHandlingUnauthorized = true;
+    session.clearSession();
+    Get.offAllNamed(AppRoutes.login);
+    Future.delayed(const Duration(seconds: 2), () {
+      _isHandlingUnauthorized = false;
+    });
   }
 
   void _logRequest(

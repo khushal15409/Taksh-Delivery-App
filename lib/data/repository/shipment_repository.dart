@@ -487,11 +487,14 @@ class ShipmentRepository {
 
   Future<dynamic> getOrdersByCount({
     required String orderType,
+    String? metric,
     required int page,
     required String token,
   }) async {
+    final metricParam =
+        (metric != null && metric.isNotEmpty) ? '&metric=$metric' : '';
     final endpoint =
-        '${AppConstants.orderListByCountEndpoint}?order_type=$orderType&page=$page';
+        '${AppConstants.orderListByCountEndpoint}?order_type=$orderType$metricParam&page=$page';
     debugPrint('🚀 [API REQ] GET: $endpoint');
 
     final res = await apiClient.get(

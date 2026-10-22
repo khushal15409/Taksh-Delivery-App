@@ -151,6 +151,7 @@ class SummaryListController extends BaseController {
             )
           : await _shipmentRepository.getOrdersByCount(
               orderType: category.toLowerCase(),
+              metric: status.toLowerCase(),
               page: currentPage,
               token: token,
             );
@@ -232,6 +233,7 @@ class SummaryListController extends BaseController {
             )
           : await _shipmentRepository.getOrdersByCount(
               orderType: category.toLowerCase(),
+              metric: status.toLowerCase(),
               page: currentPage,
               token: token,
             );

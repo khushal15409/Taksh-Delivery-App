@@ -14,6 +14,8 @@ class SessionService extends GetxService {
   UserModel? get user => _user.value;
 
   bool get isLoggedIn => _token.value != null;
+  /// Demo login (see AuthController) uses a placeholder token the server never issued.
+  bool get isMockSession => _token.value?.startsWith('mock_') ?? false;
   bool get isQuickFlow => _user.value?.isQuickFlow ?? false;
 
   @override

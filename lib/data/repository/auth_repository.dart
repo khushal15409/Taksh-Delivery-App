@@ -25,7 +25,22 @@ class AuthRepository {
     );
 
     if (response['success'] == true) {
-      return UserModel.fromJson(response['data']);
+      final data = response['data'];
+      final hasToken = data is Map &&
+          (data['token'] != null ||
+              (data['delivery_man'] is Map &&
+                  data['delivery_man']['token'] != null));
+      if (!hasToken) {
+        // The OTP is valid but there is no login: the number is not registered
+        // yet or the registration is still pending approval. Stay on the OTP
+        // screen with a clear message instead of entering the app without a token.
+        final registered = data is Map && data['can_register'] != true;
+        throw AppException(registered
+            ? (data['message']?.toString() ??
+                'Your registration is pending approval.')
+            : 'This mobile number is not registered as a delivery partner.');
+      }
+      return UserModel.fromJson(data);
     } else {
       throw AppException(response['message'] ?? 'Verification Failed');
     }
