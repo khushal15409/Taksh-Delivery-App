@@ -4,6 +4,7 @@ import 'package:delivery_boy/presentation/screens/home/quick/quick_flow_controll
 import 'package:delivery_boy/core/constants/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:delivery_boy/presentation/widgets/loading_overlay.dart';
+import 'package:delivery_boy/presentation/widgets/app_design.dart';
 import 'package:delivery_boy/presentation/screens/home/quick/widgets/quick_summary_view.dart';
 
 class QuickHomeScreen extends GetView<QuickFlowController> {
@@ -20,10 +21,10 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
       child: LoadingOverlay(
         isLoading: controller.isLoadingRx,
         child: Obx(() => Scaffold(
-              backgroundColor: const Color(0xFFF5F7FB),
+              backgroundColor: AppTheme.surface,
               appBar: controller.selectedTabIndex.value == 1
                   ? AppBar(
-                      backgroundColor: const Color(0xFF0D47A1),
+                      backgroundColor: AppTheme.deepBlue,
                       elevation: 0,
                       centerTitle: true,
                       title: const Text(
@@ -77,82 +78,94 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    final topPadding = MediaQuery.of(context).padding.top;
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.fromLTRB(20, topPadding + 10, 20, 30),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF0D47A1), Color(0xFF1976D2), Color(0xFF42A5F5)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
-      ),
+    return AppHeaderBox(
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Stack(
             children: [
-              Obx(() => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          "Hello, ${controller.userProfile.value?.name?.split(' ').first ?? 'Quick Boy'} 👋",
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 4),
-                      Text(
-                        _getFormattedDate(),
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  )),
-              GestureDetector(
-                onTap: () => controller.goToProfile(),
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 1.5),
+              Positioned(
+                right: 0,
+                bottom: -4,
+                child: Image.asset('assets/images/rider.png', height: 102),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Obx(() => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                "Hello, ${controller.userProfile.value?.name?.split(' ').first ?? 'Quick Boy'} 👋",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w800)),
+                            const SizedBox(height: 6),
+                            Text(
+                              _getFormattedDate(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 70),
+                          ],
+                        )),
                   ),
-                  child:
-                      const Icon(Icons.person, color: Colors.white, size: 28),
-                ),
-              )
+                  GestureDetector(
+                    onTap: () => controller.goToProfile(),
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white54),
+                      ),
+                      child: const CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.person,
+                            color: AppTheme.deepBlue, size: 24),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
-          const SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Obx(() => _StatItem(
-                  label: "TOTAL",
-                  value:
-                      controller.totalOrders.value.toString().padLeft(2, '0'),
-                  color: Colors.white)),
-              Obx(() => _StatItem(
-                  label: "SUCCESS",
-                  value:
-                      controller.totalSuccess.value.toString().padLeft(2, '0'),
-                  color: const Color(0xFF69F0AE))),
-              Obx(() => _StatItem(
-                  label: "FAILED",
-                  value:
-                      controller.totalFailed.value.toString().padLeft(2, '0'),
-                  color: const Color(0xFFFFD180))),
+              Expanded(
+                child: Obx(() => StatCard(
+                    icon: Icons.inventory_2_outlined,
+                    color: AppTheme.brandBlue,
+                    value: twoDigits(controller.totalOrders.value),
+                    label: 'Total')),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Obx(() => StatCard(
+                    icon: Icons.check_rounded,
+                    color: AppTheme.success,
+                    value: twoDigits(controller.totalSuccess.value),
+                    label: 'Success')),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Obx(() => StatCard(
+                    icon: Icons.close_rounded,
+                    color: AppTheme.danger,
+                    value: twoDigits(controller.totalFailed.value),
+                    label: 'Failed')),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -400,115 +413,50 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
   }
 
   Widget _buildEmptyState() {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: Container(
-        height: 500,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.assignment_late_outlined,
-                  size: 80, color: Colors.grey.shade400),
-              const SizedBox(height: 16),
-              Text(
-                "noTasksFound".tr,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Text(
-                  "Contact your manager if you believe this is an error.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: () => controller.fetchOrders(),
-                icon: const Icon(Icons.refresh, size: 18),
-                label: const Text("Refresh Status"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+    return EmptyOrdersView(onRefresh: () => controller.fetchOrders());
   }
 
   Widget _buildBottomNavigationBar() {
     return Container(
       decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            color: const Color(0xFF1565C0).withOpacity(0.12),
+            blurRadius: 16,
+            offset: const Offset(0, -4),
           ),
         ],
       ),
-      child: BottomNavigationBar(
-        currentIndex: controller.selectedTabIndex.value,
-        onTap: (index) => controller.changeTab(index),
-        selectedItemColor: const Color(0xFF0D47A1),
-        unselectedItemColor: Colors.grey,
-        selectedLabelStyle:
-            const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-        unselectedLabelStyle:
-            const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.inventory_2_outlined),
-            activeIcon: Icon(Icons.inventory_2),
-            label: 'Product',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart_outlined),
-            activeIcon: Icon(Icons.bar_chart_rounded),
-            label: 'Summary',
-          ),
-        ],
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        child: BottomNavigationBar(
+          currentIndex: controller.selectedTabIndex.value,
+          onTap: (index) => controller.changeTab(index),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          selectedItemColor: AppTheme.brandBlue,
+          unselectedItemColor: AppTheme.muted,
+          selectedLabelStyle:
+              const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          unselectedLabelStyle:
+              const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.inventory_2_outlined),
+              activeIcon: Icon(Icons.inventory_2),
+              label: 'Product',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart_outlined),
+              activeIcon: Icon(Icons.bar_chart_rounded),
+              label: 'Summary',
+            ),
+          ],
+        ),
       ),
-    );
-  }
-}
-
-class _StatItem extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-
-  const _StatItem(
-      {required this.label, required this.value, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(label,
-            style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 11,
-                fontWeight: FontWeight.w500)),
-        const SizedBox(height: 4),
-        Text(value,
-            style: TextStyle(
-                color: color, fontSize: 22, fontWeight: FontWeight.bold)),
-      ],
     );
   }
 }

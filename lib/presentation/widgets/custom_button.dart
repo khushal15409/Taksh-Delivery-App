@@ -8,6 +8,7 @@ class CustomButton extends StatelessWidget {
   final bool isEnabled;
   final Color? color;
   final double? width;
+  final IconData? trailingIcon;
 
   const CustomButton({
     super.key,
@@ -17,6 +18,7 @@ class CustomButton extends StatelessWidget {
     this.isEnabled = true,
     this.color,
     this.width,
+    this.trailingIcon,
   });
 
   @override
@@ -60,14 +62,24 @@ class CustomButton extends StatelessWidget {
                     color: Colors.white,
                   ),
                 )
-              : Text(
-                  text,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.1,
-                  ),
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      text,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
+                    if (trailingIcon != null) ...[
+                      const SizedBox(width: 10),
+                      Icon(trailingIcon, color: Colors.white, size: 22),
+                    ],
+                  ],
                 ),
         ),
       ),

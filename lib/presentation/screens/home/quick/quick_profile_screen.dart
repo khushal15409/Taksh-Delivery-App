@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:delivery_boy/presentation/screens/home/quick/quick_flow_controller.dart';
 import 'package:delivery_boy/core/constants/app_colors.dart';
+import 'package:delivery_boy/presentation/widgets/app_design.dart';
 
 class QuickProfileScreen extends GetView<QuickFlowController> {
   const QuickProfileScreen({super.key});
@@ -9,17 +10,7 @@ class QuickProfileScreen extends GetView<QuickFlowController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        title: const Text("Profile",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Get.back(),
-        ),
-      ),
+      backgroundColor: AppTheme.surface,
       body: Obx(() {
         final profile = controller.userProfile.value;
         if (profile == null) {
@@ -29,49 +20,75 @@ class QuickProfileScreen extends GetView<QuickFlowController> {
         return SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 30),
-              Center(
-                child: Stack(
+              AppHeaderBox(
+                radius: 40,
+                padding: const EdgeInsets.fromLTRB(8, 6, 8, 26),
+                child: Column(
                   children: [
-                    Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primary, width: 2),
-                      ),
-                      child: profile.profilePhoto != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(60),
-                              child: Image.network(
-                                profile.profilePhoto!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const Icon(Icons.person,
-                                        size: 80, color: AppColors.primary),
-                              ),
-                            )
-                          : const Icon(Icons.person,
-                              size: 80, color: AppColors.primary),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: GestureDetector(
-                        onTap: () => controller.updateProfilePicture(),
-                        child: const CircleAvatar(
-                          backgroundColor: AppColors.primary,
-                          radius: 18,
-                          child: Icon(Icons.camera_alt,
-                              color: Colors.white, size: 20),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back,
+                              color: Colors.white),
+                          onPressed: () => Get.back(),
                         ),
+                        const Expanded(
+                          child: Text(
+                            "Profile",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 48),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: () => controller.updateProfilePicture(),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border:
+                                  Border.all(color: Colors.white, width: 3),
+                            ),
+                            child: CircleAvatar(
+                              radius: 52,
+                              backgroundColor: const Color(0xFFC8E4FF),
+                              backgroundImage: profile.profilePhoto != null
+                                  ? NetworkImage(profile.profilePhoto!)
+                                  : const AssetImage(
+                                          'assets/images/avatar_rider.png')
+                                      as ImageProvider,
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            bottom: 4,
+                            child: Container(
+                              padding: const EdgeInsets.all(7),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.photo_camera_outlined,
+                                  size: 18, color: AppTheme.brandBlue),
+                            ),
+                          ),
+                        ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
               Text(profile.name ?? "Field Executive",
                   style: const TextStyle(
                       fontSize: 22, fontWeight: FontWeight.bold)),

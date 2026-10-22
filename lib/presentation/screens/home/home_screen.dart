@@ -8,6 +8,7 @@ import '../../../core/constants/app_strings.dart';
 import 'home_controller.dart';
 import 'summary/summary_view.dart';
 import 'widgets/shipment_card.dart';
+import '../../widgets/app_design.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,186 +25,22 @@ class HomeScreen extends StatelessWidget {
         _showExitDialog(context);
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppTheme.surface,
         body: Obx(() => controller.rxIndex.value == 0
             ? Column(
                 children: [
-                  // Enhanced Greeting Header
-                  Obx(() {
-                    final now = DateTime.now();
-                    final hour = now.hour;
-                    final greeting = hour < 12
-                        ? 'Good Morning'
-                        : hour < 17
-                            ? 'Good Afternoon'
-                            : 'Good Evening';
-                    final months = [
-                      'Jan',
-                      'Feb',
-                      'Mar',
-                      'Apr',
-                      'May',
-                      'Jun',
-                      'Jul',
-                      'Aug',
-                      'Sep',
-                      'Oct',
-                      'Nov',
-                      'Dec'
-                    ];
-                    final dateStr =
-                        '${now.day} ${months[now.month - 1]} ${now.year}';
-                    final topPadding = MediaQuery.of(context).padding.top;
-
-                    return Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.fromLTRB(20, topPadding + 10, 20, 20),
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Color(0xFF0D47A1), // Deep Blue
-                            Color(0xFF1976D2), // Royal Blue
-                            Color(0xFF42A5F5), // Light Blue
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '$greeting, 👋',
-                                      style: const TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Obx(() => Text(
-                                          controller.rxDeliveryManName.value,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                        )),
-                                  ],
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.refresh_rounded,
-                                        color: Colors.white70),
-                                    onPressed: () {
-                                      controller.fetchOrders(
-                                          showLoadingIndicator: true);
-                                      controller.fetchSummary();
-                                    },
-                                  ),
-                                  GestureDetector(
-                                    onTap: () =>
-                                        Get.toNamed(AppRoutes.settings),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(2),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.2),
-                                        shape: BoxShape.circle,
-                                        border:
-                                            Border.all(color: Colors.white30),
-                                      ),
-                                      child: const CircleAvatar(
-                                        radius: 20,
-                                        backgroundColor: Colors.white,
-                                        child: Icon(Icons.person,
-                                            color: Color(0xFF0D47A1), size: 24),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                dateStr,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.15),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Text(
-                                  "Field Executive",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 25),
-                          Row(
-                            children: [
-                              _QuickStat(
-                                  label: 'TOTAL DESPATCH',
-                                  value: '${controller.rxHeaderDispatch.value}',
-                                  color: Colors.white),
-                              const Spacer(),
-                              _QuickStat(
-                                  label: 'TOTAL SUCCESS',
-                                  value: '${controller.rxHeaderSuccess.value}',
-                                  color:
-                                      const Color(0xFF69F0AE)), // GreenAccent
-                              const Spacer(),
-                              _QuickStat(
-                                  label: 'TOTAL FAILED',
-                                  value: '${controller.rxHeaderFailed.value}',
-                                  color:
-                                      const Color(0xFFFFD180)), // OrangeAccent
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+                  _buildHeader(context, controller),
                   // Search Bar
                   Container(
                     margin:
-                        EdgeInsets.fromLTRB(width * 0.04, 15, width * 0.04, 5),
+                        EdgeInsets.fromLTRB(width * 0.04, 16, width * 0.04, 4),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
+                          color: const Color(0xFF1565C0).withOpacity(0.08),
+                          blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
                       ],
@@ -214,8 +51,10 @@ class HomeScreen extends StatelessWidget {
                           controller.rxSearchText.value = value,
                       decoration: InputDecoration(
                         hintText: "Search by name or tracking ID...",
+                        hintStyle: const TextStyle(
+                            color: AppTheme.muted, fontSize: 14),
                         prefixIcon: const Icon(Icons.search,
-                            color: AppColors.textSecondary),
+                            color: AppTheme.muted),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 15),
@@ -279,7 +118,11 @@ class HomeScreen extends StatelessWidget {
                       child: controller.isLoading
                           ? _buildShimmerList(width)
                           : controller.filteredShipments.isEmpty
-                              ? _buildEmptyState()
+                              ? EmptyOrdersView(onRefresh: () {
+                                  controller.fetchOrders(
+                                      showLoadingIndicator: true);
+                                  controller.fetchSummary();
+                                })
                               : ListView.builder(
                                   controller: controller.scrollController,
                                   padding: EdgeInsets.all(width * 0.04),
@@ -306,71 +149,206 @@ class HomeScreen extends StatelessWidget {
                 ],
               )
             : const SummaryView()),
-        bottomNavigationBar: Obx(() => BottomNavigationBar(
-              currentIndex: controller.rxIndex.value,
-              onTap: controller.changeTabIndex,
-              selectedItemColor: AppColors.primary,
-              unselectedItemColor: AppColors.textSecondary,
-              items: [
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.grid_view_rounded),
-                  label: AppStrings.shipments,
+        bottomNavigationBar: Obx(() => Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(24)),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF1565C0).withOpacity(0.12),
+                    blurRadius: 16,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(24)),
+                child: BottomNavigationBar(
+                  currentIndex: controller.rxIndex.value,
+                  onTap: controller.changeTabIndex,
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  selectedItemColor: AppTheme.brandBlue,
+                  unselectedItemColor: AppTheme.muted,
+                  selectedLabelStyle:
+                      const TextStyle(fontWeight: FontWeight.bold),
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: const Icon(Icons.inventory_2_outlined),
+                      activeIcon: const Icon(Icons.inventory_2),
+                      label: AppStrings.shipments,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: const Icon(Icons.assignment_outlined),
+                      activeIcon: const Icon(Icons.bar_chart_rounded),
+                      label: AppStrings.summary,
+                    ),
+                  ],
                 ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.assignment_outlined),
-                  label: AppStrings.summary,
-                ),
-              ],
+              ),
             )),
       ),
     );
   }
 
-  void _showExitDialog(BuildContext context) {
-    Get.defaultDialog(
-      title: AppStrings.exitApp,
-      middleText: AppStrings.exitMessage,
-      textConfirm: AppStrings.yes,
-      textCancel: AppStrings.no,
-      confirmTextColor: Colors.white,
-      onConfirm: () => SystemNavigator.pop(),
+  Widget _buildHeader(BuildContext context, HomeController controller) {
+    final now = DateTime.now();
+    final hour = now.hour;
+    final greeting = hour < 12
+        ? 'Good Morning'
+        : hour < 17
+            ? 'Good Afternoon'
+            : 'Good Evening';
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+    const days = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday'
+    ];
+    final dateStr =
+        '${days[now.weekday - 1]}, ${now.day} ${months[now.month - 1]} ${now.year}';
+
+    return AppHeaderBox(
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 22),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              Positioned(
+                right: 0,
+                bottom: -4,
+                child: Image.asset('assets/images/rider.png', height: 102),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '$greeting, 👋',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Obx(() => Text(
+                              controller.rxDeliveryManName.value,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            )),
+                        const SizedBox(height: 6),
+                        Text(
+                          dateStr,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 70),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.refresh_rounded,
+                        color: Colors.white),
+                    onPressed: () {
+                      controller.fetchOrders(showLoadingIndicator: true);
+                      controller.fetchSummary();
+                    },
+                  ),
+                  GestureDetector(
+                    onTap: () => Get.toNamed(AppRoutes.settings),
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white54),
+                      ),
+                      child: const CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.person,
+                            color: AppTheme.deepBlue, size: 24),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Obx(() => Row(
+                children: [
+                  Expanded(
+                    child: StatCard(
+                      icon: Icons.inventory_2_outlined,
+                      color: AppTheme.brandBlue,
+                      value: twoDigits(controller.rxHeaderDispatch.value),
+                      label: 'Total Dispatch',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: StatCard(
+                      icon: Icons.check_rounded,
+                      color: AppTheme.success,
+                      value: twoDigits(controller.rxHeaderSuccess.value),
+                      label: 'Total Success',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: StatCard(
+                      icon: Icons.close_rounded,
+                      color: AppTheme.danger,
+                      value: twoDigits(controller.rxHeaderFailed.value),
+                      label: 'Total Failed',
+                    ),
+                  ),
+                ],
+              )),
+        ],
+      ),
     );
   }
 
-  Widget _buildEmptyState() {
-    return ListView(
-      children: [
-        const SizedBox(height: 60),
-        Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(28),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.08),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.inventory_2_outlined,
-                  size: 72,
-                  color: AppColors.primary.withOpacity(0.5),
-                ),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'No Orders Yet',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2D3142),
-                ),
-              ),
-              const SizedBox(height: 8),
-            ],
-          ),
-        ),
-      ],
+  void _showExitDialog(BuildContext context) {
+    showAppConfirmDialog(
+      icon: Icons.logout_rounded,
+      title: AppStrings.exitApp,
+      message: AppStrings.exitMessage,
+      yesText: AppStrings.yes,
+      noText: AppStrings.no,
+      onYes: () => SystemNavigator.pop(),
     );
   }
 
@@ -538,55 +516,26 @@ class _FilterChip extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(right: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : Colors.grey.shade300,
-          ),
+          color: isSelected ? AppTheme.brandBlue : Colors.white,
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF1565C0).withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : AppColors.textPrimary,
+            color: isSelected ? Colors.white : AppTheme.ink,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
-    );
-  }
-}
-
-class _QuickStat extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-
-  const _QuickStat(
-      {required this.label, required this.value, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            color: color,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 11,
-          ),
-        ),
-      ],
     );
   }
 }

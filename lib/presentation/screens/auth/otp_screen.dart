@@ -43,78 +43,113 @@ class OtpScreen extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.textPrimary),
-          onPressed: () => Get.back(),
-        ),
-      ),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(width * 0.07),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              AppStrings.verifyCode,
-              style: TextStyle(
-                fontSize: width * 0.08,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+            Container(
+              height: MediaQuery.of(context).size.height * 0.3,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [AppTheme.deepBlue, Color(0xFF42A5F5)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                image: DecorationImage(
+                  image: AssetImage('assets/images/bg_header.png'),
+                  fit: BoxFit.cover,
+                  alignment: Alignment.bottomCenter,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              AppStrings.otpHint,
-              style: TextStyle(
-                fontSize: width * 0.04,
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 50),
-            Center(
-              child: Pinput(
-                length: 4,
-                autofocus: true,
-                controller: controller.otpController,
-                defaultPinTheme: defaultPinTheme,
-                focusedPinTheme: focusedPinTheme,
-                separatorBuilder: (index) => SizedBox(width: width * 0.02),
-                hapticFeedbackType: HapticFeedbackType.lightImpact,
-                onCompleted: (pin) => controller.verifyOtp(),
-                cursor: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 9),
-                      width: 22,
-                      height: 1,
-                      color: AppColors.primary,
-                    ),
-                  ],
+              child: SafeArea(
+                bottom: false,
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                    onPressed: () => Get.back(),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 50),
-            Obx(() => CustomButton(
-                  text: AppStrings.verifyOtp,
-                  isLoading: controller.isLoading,
-                  isEnabled: controller.isOtpValid.value,
-                  onPressed: controller.verifyOtp,
-                )),
-            const SizedBox(height: 20),
-            Center(
-              child: TextButton(
-                onPressed: () {},
-                child: Text(
-                  AppStrings.resendCode,
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+            Transform.translate(
+              offset: const Offset(0, -24),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.fromLTRB(width * 0.07, 26, width * 0.07, 30),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppStrings.verifyCode,
+                      style: TextStyle(
+                        fontSize: width * 0.08,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.ink,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      AppStrings.otpHint,
+                      style: TextStyle(
+                        fontSize: width * 0.04,
+                        color: AppTheme.muted,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    Center(
+                      child: Pinput(
+                        length: 4,
+                        autofocus: true,
+                        controller: controller.otpController,
+                        defaultPinTheme: defaultPinTheme,
+                        focusedPinTheme: focusedPinTheme,
+                        separatorBuilder: (index) =>
+                            SizedBox(width: width * 0.02),
+                        hapticFeedbackType: HapticFeedbackType.lightImpact,
+                        onCompleted: (pin) => controller.verifyOtp(),
+                        cursor: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 9),
+                              width: 22,
+                              height: 1,
+                              color: AppColors.primary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    Obx(() => CustomButton(
+                          text: AppStrings.verifyOtp,
+                          trailingIcon: Icons.arrow_forward_rounded,
+                          isLoading: controller.isLoading,
+                          isEnabled: controller.isOtpValid.value,
+                          onPressed: controller.verifyOtp,
+                        )),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          AppStrings.resendCode,
+                          style: const TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
