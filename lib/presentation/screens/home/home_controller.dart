@@ -33,6 +33,12 @@ class HomeController extends BaseController {
   final rxDeliveredCount = 0.obs;
   final rxPendingCount = 0.obs;
 
+  // Header tiles: same definitions as the Summary screen's ALL row
+  // (dispatch = success + failed), so the two screens always agree.
+  final rxHeaderDispatch = 0.obs;
+  final rxHeaderSuccess = 0.obs;
+  final rxHeaderFailed = 0.obs;
+
   // Summary State
   final orderSummaryData = <String, dynamic>{}.obs;
   final totalCollection = "0.00".obs;
@@ -145,6 +151,18 @@ class HomeController extends BaseController {
           final delivered = rxDeliveredCount.value;
           rxPendingCount.value =
               (total - delivered) < 0 ? 0 : (total - delivered);
+          final dispatch = counts['dispatch'];
+          final success = counts['success'];
+          final failed = counts['failed'];
+          if (dispatch is int && success is int && failed is int) {
+            rxHeaderDispatch.value = dispatch;
+            rxHeaderSuccess.value = success;
+            rxHeaderFailed.value = failed;
+          } else {
+            rxHeaderDispatch.value = total;
+            rxHeaderSuccess.value = delivered;
+            rxHeaderFailed.value = rxPendingCount.value;
+          }
         } else {
           // Robust fallback keys
           rxTotalCount.value = rawData['total_orders'] ??

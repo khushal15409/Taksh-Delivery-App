@@ -173,18 +173,18 @@ class HomeScreen extends StatelessWidget {
                             children: [
                               _QuickStat(
                                   label: 'TOTAL DESPATCH',
-                                  value: '${controller.rxTotalCount.value}',
+                                  value: '${controller.rxHeaderDispatch.value}',
                                   color: Colors.white),
                               const Spacer(),
                               _QuickStat(
                                   label: 'TOTAL SUCCESS',
-                                  value: '${controller.rxDeliveredCount.value}',
+                                  value: '${controller.rxHeaderSuccess.value}',
                                   color:
                                       const Color(0xFF69F0AE)), // GreenAccent
                               const Spacer(),
                               _QuickStat(
                                   label: 'TOTAL FAILED',
-                                  value: '${controller.rxPendingCount.value}',
+                                  value: '${controller.rxHeaderFailed.value}',
                                   color:
                                       const Color(0xFFFFD180)), // OrangeAccent
                             ],
