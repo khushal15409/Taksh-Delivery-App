@@ -40,7 +40,7 @@ class AuthRepository {
                 'Your registration is pending approval.')
             : 'This mobile number is not registered as a delivery partner.');
       }
-      return UserModel.fromJson(data);
+      return UserModel.fromJson(Map<String, dynamic>.from(data));
     } else {
       throw AppException(response['message'] ?? 'Verification Failed');
     }
