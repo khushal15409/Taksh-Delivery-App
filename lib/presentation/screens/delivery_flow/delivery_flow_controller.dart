@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:delivery_boy/core/utils/friendly_message.dart';
 
 import 'package:delivery_boy/core/constants/app_routes.dart';
 import 'package:delivery_boy/core/constants/app_strings.dart';
@@ -83,7 +84,7 @@ class DeliveryFlowController extends BaseController {
     } else {
       // Fallback for safety
       shipment = OrderModel();
-      Get.snackbar('Error', 'Invalid order data provided');
+      Get.snackbar('Error', 'This order could not be opened. Please go back and try again.');
     }
 
     otpController.addListener(() => otpText.value = otpController.text);
@@ -262,10 +263,7 @@ class DeliveryFlowController extends BaseController {
       hideLoading();
       Get.snackbar(
         AppStrings.error,
-        e
-            .toString()
-            .replaceAll('Exception: ', '')
-            .replaceAll('ClientException: ', ''),
+        FriendlyMessage.from(e),
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red.shade100,
         colorText: Colors.red.shade900,
@@ -451,7 +449,7 @@ class DeliveryFlowController extends BaseController {
     try {
       final orderId = shipment.id?.toString();
       if (orderId == null) {
-        Get.snackbar("Error", "Order ID not found");
+        Get.snackbar("Error", "This order could not be found. Please go back and open it again.");
         return;
       }
 

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand orange: tints the notification's small icon (the Taksh cart mark) and its accent. -->
+    <color name="taksh_notification_color">#FFA340</color>
+</resources>

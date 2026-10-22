@@ -159,7 +159,7 @@ class RvpFlowController extends BaseController {
   Future<void> _uploadEvidence() async {
     try {
       if (returnId.value == null) {
-        Get.snackbar("Error", "Return ID not found");
+        Get.snackbar("Error", "This return could not be found. Please go back and open it again.");
         return;
       }
       isUploading.value = true;
@@ -196,7 +196,7 @@ class RvpFlowController extends BaseController {
         return;
       }
       if (returnId.value == null) {
-        Get.snackbar("Error", "Return ID not found");
+        Get.snackbar("Error", "This return could not be found. Please go back and open it again.");
         return;
       }
 
@@ -239,7 +239,7 @@ class RvpFlowController extends BaseController {
   Future<void> skipQrScan() async {
     try {
       if (returnId.value == null) {
-        Get.snackbar("Error", "Return ID not found");
+        Get.snackbar("Error", "This return could not be found. Please go back and open it again.");
         return;
       }
 
@@ -426,7 +426,7 @@ class RvpFlowController extends BaseController {
     try {
       final otp = cancelOtpText.value;
       if (otp.length != 4) {
-        Get.snackbar("Error", "Please enter 4-digit OTP");
+        Get.snackbar("Error", "Please enter the 4-digit OTP");
         return;
       }
 

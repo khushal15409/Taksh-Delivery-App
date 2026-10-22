@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/error/failure.dart';
+import '../../core/utils/friendly_message.dart';
 
 class BaseController extends GetxController {
   final _isLoading = false.obs;
@@ -33,6 +34,7 @@ class BaseController extends GetxController {
     }
 
     debugPrint('❌ [ERROR] $message');
+    message = FriendlyMessage.from(message);
     if (Get.context != null) {
       Get.snackbar(
         'Error',

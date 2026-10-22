@@ -171,7 +171,7 @@ class RtDetailsView extends GetView<RtFlowController> {
                   if (phone != null && phone.isNotEmpty) {
                     ExternalActions.makeCall(phone);
                   } else {
-                    Get.snackbar("Error", "Phone number not available");
+                    Get.snackbar("Error", "Customer phone number is not available for this order.");
                   }
                 },
                 icon: const Icon(Icons.call, color: Colors.purple),
@@ -188,7 +188,7 @@ class RtDetailsView extends GetView<RtFlowController> {
                     ExternalActions.openMap(double.parse(lat.toString()),
                         double.parse(lng.toString()));
                   } else {
-                    Get.snackbar("Error", "Location coordinates not available");
+                    Get.snackbar("Error", "Location is not available for this order.");
                   }
                 },
                 icon: const Icon(Icons.navigation_outlined, color: Colors.blue),

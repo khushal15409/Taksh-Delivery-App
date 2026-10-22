@@ -88,7 +88,7 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
               Positioned(
                 right: 0,
                 bottom: -4,
-                child: Image.asset('assets/images/rider.png', height: 102),
+                child: Image.asset('assets/images/rider.png', height: 92),
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,10 +114,11 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const SizedBox(height: 70),
+                            const SizedBox(height: 56),
                           ],
                         )),
                   ),
+                  const NotificationBell(),
                   GestureDetector(
                     onTap: () => controller.goToProfile(),
                     child: Container(
@@ -143,7 +144,6 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
             children: [
               Expanded(
                 child: Obx(() => StatCard(
-                    icon: Icons.inventory_2_outlined,
                     color: AppTheme.brandBlue,
                     value: twoDigits(controller.totalOrders.value),
                     label: 'Total')),
@@ -151,7 +151,6 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
               const SizedBox(width: 10),
               Expanded(
                 child: Obx(() => StatCard(
-                    icon: Icons.check_rounded,
                     color: AppTheme.success,
                     value: twoDigits(controller.totalSuccess.value),
                     label: 'Success')),
@@ -159,7 +158,6 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
               const SizedBox(width: 10),
               Expanded(
                 child: Obx(() => StatCard(
-                    icon: Icons.close_rounded,
                     color: AppTheme.danger,
                     value: twoDigits(controller.totalFailed.value),
                     label: 'Failed')),

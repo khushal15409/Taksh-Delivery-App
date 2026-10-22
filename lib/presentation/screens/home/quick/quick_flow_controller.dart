@@ -6,6 +6,8 @@ import 'package:delivery_boy/data/repository/shipment_repository.dart';
 import 'package:delivery_boy/presentation/controllers/base_controller.dart';
 import '../home_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:delivery_boy/core/utils/friendly_message.dart';
+import 'package:delivery_boy/core/services/push_notification_service.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -599,13 +601,13 @@ class QuickFlowController extends BaseController {
           Get.toNamed(AppRoutes.quickPickup);
         } else {
           Get.snackbar("Error",
-              response['message'] ?? "Failed to fetch verification data");
+              response['message'] ?? "Could not load the pickup checklist. Please try again.");
         }
       }
     } catch (e) {
       debugPrint("Error fetching pickup verification: $e");
       Get.snackbar(
-          "Error", "Something went wrong while fetching verification data");
+          "Error", "Could not load the pickup checklist. Please check your internet and try again.");
     } finally {
       hideLoading();
     }
@@ -636,7 +638,7 @@ class QuickFlowController extends BaseController {
               (rawId is num) ? rawId.toInt().toString() : rawId.toString();
 
           if (orderId == "null" || orderId.isEmpty) {
-            Get.snackbar("Error", "Order ID not found in local state");
+            Get.snackbar("Error", "This order could not be found. Please go back and open it again.");
             return;
           }
 
@@ -654,12 +656,12 @@ class QuickFlowController extends BaseController {
             currentStep.value = QuickStep.pickupImages;
           } else {
             Get.snackbar(
-                "Error", response['message'] ?? "Failed to save answers");
+                "Error", response['message'] ?? "Your answers could not be saved. Please try again.");
           }
         }
       } catch (e) {
         debugPrint("Error submitting pickup answers: $e");
-        Get.snackbar("Error", "Failed to submit answers");
+        Get.snackbar("Error", "Your answers could not be saved. Please try again.");
       } finally {
         hideLoading();
       }
@@ -781,11 +783,11 @@ class QuickFlowController extends BaseController {
             );
           } else {
             Get.snackbar(
-                "Error", response['message'] ?? "Failed to upload photos");
+                "Error", response['message'] ?? "Photos could not be uploaded. Please try again.");
           }
         }
       } catch (e) {
-        Get.snackbar("Error", "An unexpected error occurred: $e");
+        Get.snackbar("Error", FriendlyMessage.from(e));
       } finally {
         hideLoading();
       }
@@ -821,7 +823,7 @@ class QuickFlowController extends BaseController {
     } catch (e) {
       hideLoading();
       debugPrint("Error in goToMarkPending: $e");
-      Get.snackbar("Error", "Could not open cancellation screen: $e");
+      Get.snackbar("Error", "Could not open the cancellation screen. Please try again.");
     }
   }
 
@@ -866,7 +868,7 @@ class QuickFlowController extends BaseController {
         if (pendingOtpText.value.length == 4) {
           verifyPickupCancelOtp();
         } else {
-          Get.snackbar("Error", "Please enter 4-digit OTP");
+          Get.snackbar("Error", "Please enter the 4-digit OTP");
         }
         break;
 
@@ -918,7 +920,7 @@ class QuickFlowController extends BaseController {
         if (rtSellerOtpText.value.length == 4) {
           verifyRtSellerOtp();
         } else {
-          Get.snackbar("Error", "Please enter 4-digit OTP");
+          Get.snackbar("Error", "Please enter the 4-digit OTP");
         }
         break;
       case QuickStep.markPendingRtSellerOptions:
@@ -964,7 +966,7 @@ class QuickFlowController extends BaseController {
         if (customerCancelOtpText.value.length == 4) {
           await verifyCustomerCancelOtp();
         } else {
-          Get.snackbar("Error", "Please enter valid 4-digit OTP");
+          Get.snackbar("Error", "Please enter the 4-digit OTP");
         }
         break;
 
@@ -995,7 +997,7 @@ class QuickFlowController extends BaseController {
         if (innerOtpText.value.length == 4) {
           verifyInnerCustomerCancelOtp();
         } else {
-          Get.snackbar("Error", "Please enter 4-digit OTP");
+          Get.snackbar("Error", "Please enter the 4-digit OTP");
         }
         break;
 
@@ -1239,7 +1241,7 @@ class QuickFlowController extends BaseController {
               "Success", otpResponse['message'] ?? "OTP sent successfully");
           return true;
         } else {
-          handleError(otpResponse['message'] ?? "Failed to send OTP");
+          handleError(otpResponse['message'] ?? "OTP could not be sent. Please try again.");
         }
       }
     } catch (e) {
@@ -1291,7 +1293,7 @@ class QuickFlowController extends BaseController {
         if (response['success'] == true) {
           return true;
         } else {
-          handleError(response['message'] ?? "Failed to submit cancellation");
+          handleError(response['message'] ?? "Cancellation could not be submitted. Please try again.");
         }
       }
     } catch (e) {
@@ -1320,7 +1322,7 @@ class QuickFlowController extends BaseController {
               response['message'] ?? "Order Marked Pending Successfully");
           fetchOrders();
         } else {
-          handleError(response['message'] ?? "Failed to submit cancellation");
+          handleError(response['message'] ?? "Cancellation could not be submitted. Please try again.");
         }
       }
     } catch (e) {
@@ -1345,7 +1347,7 @@ class QuickFlowController extends BaseController {
           Get.snackbar("Success", response['message'] ?? "OTP sent");
           return true;
         } else {
-          handleError(response['message'] ?? "Failed to send OTP");
+          handleError(response['message'] ?? "OTP could not be sent. Please try again.");
         }
       }
     } catch (e) {
@@ -1526,7 +1528,7 @@ class QuickFlowController extends BaseController {
           _showSuccessDialog(response['message'] ?? "Successfully Submitted");
         } else {
           Get.snackbar(
-              "Error", response['message'] ?? "Failed to submit cancellation");
+              "Error", response['message'] ?? "Cancellation could not be submitted. Please try again.");
         }
       }
     } catch (e) {
@@ -1568,7 +1570,7 @@ class QuickFlowController extends BaseController {
           fetchOrders();
         } else {
           Get.snackbar(
-              "Error", response['message'] ?? "Failed to upload images");
+              "Error", response['message'] ?? "Images could not be uploaded. Please try again.");
         }
       }
     } catch (e) {
@@ -1582,7 +1584,12 @@ class QuickFlowController extends BaseController {
     _showConfirmDialog(
       title: "Logout",
       message: "Are you sure you want to logout?",
-      onConfirm: () => Get.offAllNamed(AppRoutes.login),
+      onConfirm: () async {
+        // Stop pushes for this device and end the session, then go to the login screen.
+        await PushNotificationService.instance.unregisterDevice();
+        _sessionService.clearSession();
+        Get.offAllNamed(AppRoutes.login);
+      },
       confirmText: "LOGOUT",
       confirmColor: Colors.red,
     );
@@ -1641,7 +1648,7 @@ class QuickFlowController extends BaseController {
           Get.snackbar("Success", response['message'] ?? "OTP sent to seller");
           return true;
         } else {
-          Get.snackbar("Error", response['message'] ?? "Failed to send OTP");
+          Get.snackbar("Error", response['message'] ?? "OTP could not be sent. Please try again.");
         }
       }
     } catch (e) {
@@ -1674,7 +1681,7 @@ class QuickFlowController extends BaseController {
         if (response['success'] == true) {
           submitPickupCancel(); // Final submission and success popup
         } else {
-          Get.snackbar("Error", response['message'] ?? "Invalid OTP");
+          Get.snackbar("Error", response['message'] ?? "Wrong OTP. Please check the OTP and enter it again.");
         }
       }
     } catch (e) {
@@ -1748,11 +1755,11 @@ class QuickFlowController extends BaseController {
           );
         } else {
           Get.snackbar(
-              "Error", response['message'] ?? "Failed to cancel pickup");
+              "Error", response['message'] ?? "Pickup could not be cancelled. Please try again.");
         }
       }
     } catch (e) {
-      Get.snackbar("Error", "An unexpected error occurred: $e");
+      Get.snackbar("Error", FriendlyMessage.from(e));
     } finally {
       hideLoading();
     }
@@ -1890,7 +1897,7 @@ class QuickFlowController extends BaseController {
               isFvdPaymentVerified.value = false;
             } else {
               isFvdPaymentVerified.value = true;
-              Get.snackbar("Success", "Verified with status: $paymentStatus");
+              Get.snackbar("Success", "Payment status: $paymentStatus");
             }
           }
         } else {
@@ -1974,7 +1981,7 @@ class QuickFlowController extends BaseController {
           currentStep.value = QuickStep.fvdOtp;
         } else {
           Get.snackbar(
-              "Error", response['message'] ?? "Failed to send Delivery OTP");
+              "Error", response['message'] ?? "OTP could not be sent to the customer. Please try again.");
         }
       }
     } catch (e) {
@@ -2010,7 +2017,7 @@ class QuickFlowController extends BaseController {
               "Success", response['message'] ?? "Delivery OTP Verified");
           currentStep.value = QuickStep.fvdOptions;
         } else {
-          Get.snackbar("Error", response['message'] ?? "Invalid Delivery OTP");
+          Get.snackbar("Error", response['message'] ?? "Wrong OTP. Please ask the customer for the correct OTP.");
         }
       }
     } catch (e) {
@@ -2051,7 +2058,7 @@ class QuickFlowController extends BaseController {
           }
         } else {
           Get.snackbar("Error",
-              response['message'] ?? "Failed to submit recipient details");
+              response['message'] ?? "Recipient details could not be saved. Please try again.");
         }
       }
     } catch (e) {
@@ -2082,7 +2089,7 @@ class QuickFlowController extends BaseController {
       if (fvdOtpText.value.length == 4) {
         _verifyDeliveryOtp();
       } else {
-        Get.snackbar("Error", "Please enter valid 4-digit OTP");
+        Get.snackbar("Error", "Please enter the 4-digit OTP");
       }
     } else if (currentStep.value == QuickStep.fvdOptions) {
       if (isFvdOptionsStepValid) {
@@ -2148,7 +2155,7 @@ class QuickFlowController extends BaseController {
           currentStep.value = QuickStep.fvdImages;
         } else {
           Get.snackbar(
-              "Error", response['message'] ?? "Failed to collect cash");
+              "Error", response['message'] ?? "Cash collection could not be saved. Please try again.");
         }
       }
     } catch (e) {
@@ -2181,7 +2188,7 @@ class QuickFlowController extends BaseController {
           fvdPaymentDetails.assignAll(response['data'] ?? {});
           currentStep.value = QuickStep.fvdPaymentDetails;
         } else {
-          Get.snackbar("Error", response['message'] ?? "Failed to generate QR");
+          Get.snackbar("Error", response['message'] ?? "QR code could not be created. Please try again.");
         }
       }
     } catch (e) {
@@ -2278,7 +2285,7 @@ class QuickFlowController extends BaseController {
           );
         } else {
           Get.snackbar(
-              "Error", response['message'] ?? "Failed to upload images");
+              "Error", response['message'] ?? "Images could not be uploaded. Please try again.");
         }
       }
     } catch (e) {
@@ -2340,7 +2347,7 @@ class QuickFlowController extends BaseController {
 
   Future<void> launchCaller(String? phone) async {
     if (phone == null || phone.isEmpty) {
-      Get.snackbar("Error", "Phone number not available");
+      Get.snackbar("Error", "Customer phone number is not available for this order.");
       return;
     }
     final Uri url = Uri.parse("tel:$phone");
@@ -2357,7 +2364,7 @@ class QuickFlowController extends BaseController {
 
   Future<void> launchMap(String? lat, String? long) async {
     if (lat == null || lat.isEmpty || long == null || long.isEmpty) {
-      Get.snackbar("Error", "Location coordinates not available");
+      Get.snackbar("Error", "Location is not available for this order.");
       return;
     }
     final Uri url =
@@ -2387,7 +2394,7 @@ class QuickFlowController extends BaseController {
           Get.snackbar(
               "Success", response['message'] ?? "OTP sent successfully");
         } else {
-          handleError(response['message'] ?? "Failed to send OTP");
+          handleError(response['message'] ?? "OTP could not be sent. Please try again.");
         }
       }
     } catch (e) {
@@ -2411,7 +2418,7 @@ class QuickFlowController extends BaseController {
         if (response['success'] == true) {
           currentStep.value = QuickStep.markPendingRtSellerOptions;
         } else {
-          handleError(response['message'] ?? "Invalid OTP");
+          handleError(response['message'] ?? "Wrong OTP. Please check the OTP and enter it again.");
         }
       }
     } catch (e) {
@@ -2464,7 +2471,7 @@ class QuickFlowController extends BaseController {
           _showSuccessDialog(response['message'] ??
               "Return to Seller Flow Completed Successfully");
         } else {
-          handleError(response['message'] ?? "Failed to upload images");
+          handleError(response['message'] ?? "Images could not be uploaded. Please try again.");
         }
       }
     } catch (e) {

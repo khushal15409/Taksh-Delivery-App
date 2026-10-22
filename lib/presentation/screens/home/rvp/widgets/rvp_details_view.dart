@@ -155,7 +155,7 @@ class RvpDetailsView extends GetView<RvpFlowController> {
                   if (phone != null && phone.isNotEmpty) {
                     ExternalActions.makeCall(phone);
                   } else {
-                    Get.snackbar("Error", "Phone number not available");
+                    Get.snackbar("Error", "Customer phone number is not available for this order.");
                   }
                 },
                 icon: const Icon(Icons.call, color: AppColors.primary),
@@ -172,7 +172,7 @@ class RvpDetailsView extends GetView<RvpFlowController> {
                     ExternalActions.openMap(double.parse(lat.toString()),
                         double.parse(lng.toString()));
                   } else {
-                    Get.snackbar("Error", "Location coordinates not available");
+                    Get.snackbar("Error", "Location is not available for this order.");
                   }
                 },
                 icon: const Icon(Icons.navigation_outlined, color: Colors.blue),

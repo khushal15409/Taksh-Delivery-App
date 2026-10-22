@@ -86,7 +86,7 @@ class UndeliveredController extends BaseController {
 
   Future<void> verifyOtp() async {
     if (otpController.text.length != 4) {
-      Get.snackbar(AppStrings.error, "Please enter a valid 4-digit OTP");
+      Get.snackbar(AppStrings.error, "Please enter the 4-digit OTP");
       return;
     }
 
@@ -134,7 +134,7 @@ class UndeliveredController extends BaseController {
       if (isOtpReason) {
         if (otpController.text.length != 4) {
           hideLoading();
-          Get.snackbar(AppStrings.error, "Please enter a valid 4-digit OTP");
+          Get.snackbar(AppStrings.error, "Please enter the 4-digit OTP");
           return;
         }
 

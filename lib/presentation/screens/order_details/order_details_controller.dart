@@ -76,7 +76,7 @@ class OrderDetailsController extends BaseController {
     if (shipment.value != null) {
       Get.toNamed(AppRoutes.undeliveredProcess, arguments: shipment.value);
     } else {
-      Get.snackbar('Error', 'Order details not loaded');
+      Get.snackbar('Error', 'Order details are still loading. Please wait a moment and try again.');
     }
   }
 
@@ -84,7 +84,7 @@ class OrderDetailsController extends BaseController {
     if (shipment.value != null) {
       Get.toNamed(AppRoutes.deliveryFlow, arguments: shipment.value);
     } else {
-      Get.snackbar('Error', 'Order details not loaded');
+      Get.snackbar('Error', 'Order details are still loading. Please wait a moment and try again.');
     }
   }
 

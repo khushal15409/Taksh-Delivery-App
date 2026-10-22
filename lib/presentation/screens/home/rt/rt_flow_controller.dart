@@ -399,7 +399,7 @@ class RtFlowController extends BaseController {
   Future<void> _verifyDeliveryOtp() async {
     try {
       if (otpText.value.length != 4) {
-        Get.snackbar("Error", "Please enter 4-digit OTP");
+        Get.snackbar("Error", "Please enter the 4-digit OTP");
         return;
       }
       showLoading();
@@ -426,7 +426,7 @@ class RtFlowController extends BaseController {
   Future<void> verifyCancelOtp() async {
     try {
       if (cancelOtpText.value.length != 4) {
-        Get.snackbar("Error", "Please enter 4-digit OTP");
+        Get.snackbar("Error", "Please enter the 4-digit OTP");
         return;
       }
 

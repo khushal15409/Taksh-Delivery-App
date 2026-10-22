@@ -7,6 +7,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../controllers/base_controller.dart';
 
 import 'package:delivery_boy/core/services/session_service.dart';
+import 'package:delivery_boy/core/services/push_notification_service.dart';
 
 class AuthController extends BaseController {
   final AuthRepository _authRepository = Get.find<AuthRepository>();
@@ -83,6 +84,7 @@ class AuthController extends BaseController {
 
       _sessionService.saveSession(finalUser);
       hideLoading();
+      PushNotificationService.instance.onLogin();
 
       Get.snackbar(AppStrings.success, AppStrings.loginSuccessful);
       if (finalUser.isQuickFlow) {

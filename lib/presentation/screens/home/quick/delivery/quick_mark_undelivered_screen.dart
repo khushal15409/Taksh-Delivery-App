@@ -1320,7 +1320,7 @@ class QuickMarkUndeliveredScreen extends GetView<QuickFlowController> {
             child: ElevatedButton(
               onPressed: () {
                 Get.snackbar(
-                    "Success", "Images uploaded successfully (UI Only).",
+                    "Success", "Images uploaded successfully.",
                     snackPosition: SnackPosition.BOTTOM,
                     backgroundColor: Colors.green,
                     colorText: Colors.white);

@@ -237,7 +237,7 @@ class HomeScreen extends StatelessWidget {
               Positioned(
                 right: 0,
                 bottom: -4,
-                child: Image.asset('assets/images/rider.png', height: 102),
+                child: Image.asset('assets/images/rider.png', height: 92),
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,10 +273,11 @@ class HomeScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 70),
+                        const SizedBox(height: 56),
                       ],
                     ),
                   ),
+                  const NotificationBell(),
                   IconButton(
                     icon: const Icon(Icons.refresh_rounded,
                         color: Colors.white),
@@ -310,7 +311,6 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: StatCard(
-                      icon: Icons.inventory_2_outlined,
                       color: AppTheme.brandBlue,
                       value: twoDigits(controller.rxHeaderDispatch.value),
                       label: 'Total Dispatch',
@@ -319,7 +319,6 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: StatCard(
-                      icon: Icons.check_rounded,
                       color: AppTheme.success,
                       value: twoDigits(controller.rxHeaderSuccess.value),
                       label: 'Total Success',
@@ -328,7 +327,6 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: StatCard(
-                      icon: Icons.close_rounded,
                       color: AppTheme.danger,
                       value: twoDigits(controller.rxHeaderFailed.value),
                       label: 'Total Failed',

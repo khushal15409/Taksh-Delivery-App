@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import '../constants/app_routes.dart';
 import '../services/session_service.dart';
+import '../utils/friendly_message.dart';
 
 class ApiClient {
   final String baseUrl;
@@ -46,18 +47,44 @@ class ApiClient {
     } on SocketException catch (e) {
       return {
         'success': false,
-        'message': "Network Error (${e.message}). Please check ISP/WiFi."
+        'message': FriendlyMessage.noInternet
       };
     } on TimeoutException {
       return {
         'success': false,
-        'message': "Request timed out. Please try again."
+        'message': FriendlyMessage.slowServer
       };
     } catch (e) {
       return {
         'success': false,
-        'message': "An unexpected error occurred: ${e.toString()}"
+        'message': FriendlyMessage.from(e)
       };
+    }
+  }
+
+  Future<dynamic> delete(String endpoint,
+      {Map<String, dynamic>? body, String? token}) async {
+    final url = '$baseUrl$endpoint';
+    final headers = _getHeaders(token);
+    final encodedBody = body != null ? jsonEncode(body) : null;
+
+    try {
+      _logRequest('DELETE', url, headers, encodedBody);
+      final response = await client
+          .delete(
+            Uri.parse(url),
+            headers: headers,
+            body: encodedBody,
+          )
+          .timeout(timeout);
+      _logResponse(response);
+      return _processResponse(response, token: token);
+    } on SocketException {
+      return {'success': false, 'message': FriendlyMessage.noInternet};
+    } on TimeoutException {
+      return {'success': false, 'message': FriendlyMessage.slowServer};
+    } catch (e) {
+      return {'success': false, 'message': FriendlyMessage.from(e)};
     }
   }
 
@@ -107,17 +134,17 @@ class ApiClient {
     } on SocketException catch (e) {
       return {
         'success': false,
-        'message': "Network Error (${e.message}). Please check ISP/WiFi."
+        'message': FriendlyMessage.noInternet
       };
     } on TimeoutException {
       return {
         'success': false,
-        'message': "Request timed out. Please try again."
+        'message': FriendlyMessage.slowServer
       };
     } catch (e) {
       return {
         'success': false,
-        'message': "An unexpected error occurred: ${e.toString()}"
+        'message': FriendlyMessage.from(e)
       };
     }
   }
@@ -141,12 +168,12 @@ class ApiClient {
       } on SocketException catch (e) {
         return {
           'success': false,
-          'message': "Network Error (${e.message}). Please check ISP/WiFi."
+          'message': FriendlyMessage.noInternet
         };
       } on TimeoutException {
         return {
           'success': false,
-          'message': "Request timed out. Please try again."
+          'message': FriendlyMessage.slowServer
         };
       } catch (e) {
         if (e.toString().contains('Connection closed before full header') &&
@@ -157,7 +184,7 @@ class ApiClient {
         }
         return {
           'success': false,
-          'message': "An unexpected error occurred: ${e.toString()}"
+          'message': FriendlyMessage.from(e)
         };
       }
     }
@@ -171,7 +198,7 @@ class ApiClient {
       body = jsonDecode(response.body);
     } catch (e) {
       // If server returns HTML instead of JSON (common on 500 errors)
-      return {'success': false, 'message': "Invalid server response format"};
+      return {'success': false, 'message': FriendlyMessage.somethingWrong};
     }
 
     if (response.statusCode >= 200 && response.statusCode < 500) {
@@ -182,8 +209,8 @@ class ApiClient {
       return body;
     } else {
       final errorMsg = body != null && body is Map<String, dynamic>
-          ? (body['message'] ?? 'Server Error (${response.statusCode})')
-          : 'Server Error (${response.statusCode})';
+          ? (body['message'] ?? FriendlyMessage.somethingWrong)
+          : FriendlyMessage.somethingWrong;
       return {'success': false, 'message': errorMsg};
     }
   }

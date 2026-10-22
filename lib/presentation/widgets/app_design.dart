@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_routes.dart';
+import '../../core/services/push_notification_service.dart';
 
 /// Blue header with the skyline background used by every main screen.
 class AppHeaderBox extends StatelessWidget {
@@ -42,16 +44,14 @@ class AppHeaderBox extends StatelessWidget {
   }
 }
 
-/// "Total / Success / Failed" tile that sits inside the header.
+/// "Total / Success / Failed" tile that sits inside the header (number + label, tinted by [color]).
 class StatCard extends StatelessWidget {
-  final IconData icon;
   final Color color;
   final String value;
   final String label;
 
   const StatCard({
     super.key,
-    required this.icon,
     required this.color,
     required this.value,
     required this.label,
@@ -60,43 +60,33 @@ class StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.12),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.14),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const SizedBox(height: 6),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
               value,
-              style: const TextStyle(
-                fontSize: 24,
+              style: TextStyle(
+                fontSize: 22,
                 fontWeight: FontWeight.w800,
-                color: AppTheme.ink,
+                color: color,
               ),
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 1),
           Text(
             label,
             textAlign: TextAlign.center,
@@ -342,5 +332,52 @@ class EmptyOrdersView extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+/// Bell icon of the headers: opens the notification inbox, with an unread badge.
+class NotificationBell extends StatelessWidget {
+  const NotificationBell({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final count = PushNotificationService.instance.unreadCount.value;
+      return IconButton(
+        tooltip: 'Notifications',
+        onPressed: () => Get.toNamed(AppRoutes.notifications),
+        icon: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            const Icon(Icons.notifications_none_rounded,
+                color: Colors.white, size: 26),
+            if (count > 0)
+              Positioned(
+                right: -4,
+                top: -4,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                  constraints:
+                      const BoxConstraints(minWidth: 16, minHeight: 16),
+                  decoration: const BoxDecoration(
+                    color: AppTheme.danger,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  child: Text(
+                    count > 99 ? '99+' : '$count',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      );
+    });
   }
 }

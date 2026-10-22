@@ -241,7 +241,7 @@ class FmFlowController extends BaseController {
         }
       } else if (res != null && res['success'] == false) {
         Get.snackbar(
-            "Error", res['message']?.toString() ?? "Failed to load questions");
+            "Error", res['message']?.toString() ?? "Could not load the questions. Please try again.");
       }
     } catch (e) {
       handleError(e);
@@ -274,7 +274,7 @@ class FmFlowController extends BaseController {
 
       if (res != null && res['success'] == false) {
         Get.snackbar(
-            "Error", res['message']?.toString() ?? "Failed to save answers");
+            "Error", res['message']?.toString() ?? "Your answers could not be saved. Please try again.");
         return;
       }
 
@@ -445,7 +445,7 @@ class FmFlowController extends BaseController {
   Future<void> verifyFmPendingOtp() async {
     try {
       if (cancelOtpText.value.length != 4) {
-        Get.snackbar("Error", "Please enter 4-digit OTP");
+        Get.snackbar("Error", "Please enter the 4-digit OTP");
         return;
       }
 

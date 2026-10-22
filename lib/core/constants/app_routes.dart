@@ -23,6 +23,8 @@ import 'package:delivery_boy/presentation/screens/home/quick/quick_details_scree
 import 'package:delivery_boy/presentation/screens/home/quick/quick_mark_pending_screen.dart';
 import 'package:delivery_boy/presentation/screens/home/quick/delivery/quick_mark_undelivered_screen.dart';
 import 'package:delivery_boy/presentation/screens/home/quick/quick_profile_screen.dart';
+import 'package:delivery_boy/presentation/screens/notifications/notifications_controller.dart';
+import 'package:delivery_boy/presentation/screens/notifications/notifications_screen.dart';
 // Note: QuickDeliveryScreen removed in v2.5.3 simplification
 
 class AppRoutes {
@@ -48,6 +50,7 @@ class AppRoutes {
   static const String quickMarkUndelivered = '/quick-mark-undelivered';
   static const String quickProfile = '/quick-profile';
   static const String quickFvd = '/quick-fvd';
+  static const String notifications = '/notifications';
 
   static List<GetPage> routes = [
     GetPage(name: splash, page: () => const SplashScreen()),
@@ -102,5 +105,10 @@ class AppRoutes {
         name: quickFvd,
         page: () => const QuickFVDScreen(),
         binding: QuickFlowBinding()),
+    GetPage(
+        name: notifications,
+        page: () => const NotificationsScreen(),
+        binding: BindingsBuilder(
+            () => Get.lazyPut<NotificationsController>(() => NotificationsController()))),
   ];
 }
