@@ -34,11 +34,6 @@ class AuthController extends BaseController {
   void sendOtp() async {
     if (!isMobileValid.value) return;
 
-    if (mobileController.text == '9999999999') {
-      Get.toNamed(AppRoutes.otp);
-      return;
-    }
-
     try {
       showLoading();
       final response = await _authRepository.sendOtp(mobileController.text);
@@ -61,26 +56,11 @@ class AuthController extends BaseController {
     try {
       showLoading();
 
-      UserModel finalUser;
-
-      if (mobileController.text == '9999999999') {
-        // Mock successful login for Quick Flow
-        finalUser = UserModel(
-          id: 9999,
-          name: 'Quick Delivery Boy',
-          email: 'quick@takshallinone.in',
-          mobileNumber: '9999999999',
-          token: 'mock_token_quick',
-          isQuickFlow: true,
-          orderType: 'express',
-        );
-      } else {
-        final user = await _authRepository.verifyOtp(
-          mobileController.text,
-          otpController.text,
-        );
-        finalUser = user;
-      }
+      // Real login only: the OTP is verified by the server, which returns the user and a token.
+      final finalUser = await _authRepository.verifyOtp(
+        mobileController.text,
+        otpController.text,
+      );
 
       _sessionService.saveSession(finalUser);
       hideLoading();
