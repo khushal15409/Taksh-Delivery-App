@@ -49,6 +49,7 @@ class DeliveryOtpView extends GetView<QuickFlowController> {
                 Center(
                   child: Pinput(
                     length: 4,
+                    autofocus: true,
                     controller: controller.fvdOtpController,
                     onChanged: (value) => controller.fvdOtpText.value = value,
                     defaultPinTheme: defaultPinTheme,

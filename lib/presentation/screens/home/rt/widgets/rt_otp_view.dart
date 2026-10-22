@@ -25,6 +25,7 @@ class RtOtpView extends GetView<RtFlowController> {
                 const SizedBox(height: 30),
                 Pinput(
                   length: 4,
+                  autofocus: true,
                   controller: controller.otpController,
                   defaultPinTheme: PinTheme(
                     width: 55,

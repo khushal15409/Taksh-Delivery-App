@@ -77,6 +77,7 @@ class OtpScreen extends StatelessWidget {
             Center(
               child: Pinput(
                 length: 4,
+                autofocus: true,
                 controller: controller.otpController,
                 defaultPinTheme: defaultPinTheme,
                 focusedPinTheme: focusedPinTheme,

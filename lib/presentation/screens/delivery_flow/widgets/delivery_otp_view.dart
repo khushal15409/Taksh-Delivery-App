@@ -49,6 +49,7 @@ class DeliveryOtpView extends GetView<DeliveryFlowController> {
                 Center(
                   child: Pinput(
                     length: 4,
+                    autofocus: true,
                     controller: controller.otpController,
                     defaultPinTheme: defaultPinTheme,
                     focusedPinTheme: defaultPinTheme.copyWith(

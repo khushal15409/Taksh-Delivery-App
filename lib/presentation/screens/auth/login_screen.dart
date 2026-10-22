@@ -89,6 +89,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                     child: TextField(
                       controller: controller.mobileController,
+                      autofocus: true,
                       keyboardType: TextInputType.phone,
                       maxLength: 10,
                       decoration: const InputDecoration(
