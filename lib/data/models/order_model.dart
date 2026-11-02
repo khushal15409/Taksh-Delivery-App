@@ -101,8 +101,13 @@ class OrderModel {
           json['sla_status'] == 'breached' || json['is_sla_breached'] == true,
       slaStatus: json['sla_status'],
       trackingId: json['tracking_id']?.toString(),
-      paymentMethod: json['payment_method']?.toString() ?? json['payment_type']?.toString(),
-      paymentStatus: json['payment_status']?.toString(),
+      paymentMethod: json['payment_method']?.toString() ??
+          json['payment_type']?.toString() ??
+          _nested(json, 'order', 'payment_method') ??
+          _nested(json, 'payment', 'payment_method'),
+      paymentStatus: json['payment_status']?.toString() ??
+          _nested(json, 'order', 'payment_status') ??
+          _nested(json, 'payment', 'payment_status'),
       totalAmount: _parseFloatOrNum(json['total_payable'] ??
           json['payable_amount'] ??
           json['total_amount'] ??
@@ -163,6 +168,28 @@ class OrderModel {
       'delivery_address': deliveryAddress?.toJson(),
       'fulfillment_center_name': fulfillmentCenterName,
     };
+  }
+
+  static String? _nested(Map<String, dynamic> json, String key, String field) {
+    final v = json[key];
+    return v is Map ? v[field]?.toString() : null;
+  }
+
+  /// True when the order is cash-on-delivery; false for prepaid/online.
+  /// Payment method decides first; payment status is only a fallback.
+  bool get isCod {
+    final method = (paymentMethod ?? '').trim().toLowerCase();
+    if (method.isNotEmpty) {
+      if (method.contains('online') ||
+          method.contains('razorpay') ||
+          method.contains('prepaid') ||
+          method.contains('upi')) {
+        return false;
+      }
+      return method == 'cod' || method.contains('cash');
+    }
+    final status = (paymentStatus ?? '').trim().toLowerCase();
+    return status == 'pending' || status == 'unpaid';
   }
 
   static double? _parseFloatOrNum(dynamic value) {

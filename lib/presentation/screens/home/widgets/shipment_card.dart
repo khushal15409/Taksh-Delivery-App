@@ -92,8 +92,6 @@ class ShipmentCard extends StatelessWidget {
 
     final customerName = shipment.customer?.name ?? 'Customer';
     final orderNumber = shipment.orderNumber ?? '-';
-    final paymentMethod = (shipment.paymentMethod ?? 'online').toUpperCase();
-    final paymentStatus = (shipment.paymentStatus ?? 'paid').toUpperCase();
     final totalAmount = shipment.totalAmount;
     final phone = shipment.customer?.mobile ?? '';
 
@@ -114,7 +112,7 @@ class ShipmentCard extends StatelessWidget {
 
     final lat = shipment.deliveryAddress?.latitude ?? 0.0;
     final lng = shipment.deliveryAddress?.longitude ?? 0.0;
-    final isCod = paymentMethod == 'COD';
+    final isCod = shipment.isCod;
 
     final amountValue = totalAmount ?? 0;
     final amountText = '\u20B9${amountValue % 1 == 0 ? amountValue.toInt().toString() : amountValue.toStringAsFixed(2)}';
@@ -239,6 +237,14 @@ class ShipmentCard extends StatelessWidget {
                   ),
                 ],
                 const Spacer(),
+                if (!(category == 'FWD' && !isQuick))
+                  _Badge(
+                    label: paymentLabel.toUpperCase(),
+                    bg: (isCod ? Colors.orange : Colors.green).withOpacity(0.12),
+                    border: (isCod ? Colors.orange : Colors.green)
+                        .withOpacity(0.4),
+                    textColor: isCod ? Colors.orange : Colors.green,
+                  ),
                 if (category == 'FWD' && !isQuick)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
