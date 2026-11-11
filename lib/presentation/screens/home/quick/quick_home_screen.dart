@@ -277,7 +277,8 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
       }
     }
 
-    final paymentAmount = order['total_payable'] ??
+    final paymentAmount = order['items_total'] ??
+        order['total_payable'] ??
         order['total_amount'] ??
         paymentData['amount'] ??
         '0.00';
