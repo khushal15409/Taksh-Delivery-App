@@ -18,9 +18,11 @@ class ExternalActions {
     final String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
     final Uri uri = Uri.parse(googleUrl);
     
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
+    try {
+      final launched =
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!launched) Get.snackbar('Error', 'Could not launch maps');
+    } catch (_) {
       Get.snackbar('Error', 'Could not launch maps');
     }
   }

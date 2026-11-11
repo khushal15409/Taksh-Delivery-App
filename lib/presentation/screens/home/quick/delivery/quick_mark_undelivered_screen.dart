@@ -227,7 +227,7 @@ class QuickMarkUndeliveredScreen extends GetView<QuickFlowController> {
                   ),
                   const SizedBox(height: 10),
                   TextButton.icon(
-                    onPressed: () {},
+                    onPressed: () => controller.sendCustomerCancelOtp(),
                     icon: const Icon(Icons.send_rounded,
                         size: 16, color: AppColors.primary),
                     label: const Text(
@@ -559,7 +559,7 @@ class QuickMarkUndeliveredScreen extends GetView<QuickFlowController> {
                   ),
                   const SizedBox(height: 10),
                   TextButton.icon(
-                    onPressed: () {},
+                    onPressed: () => controller.sendCustomerCancelOtp(),
                     icon: const Icon(Icons.send_rounded,
                         size: 16, color: AppColors.primary),
                     label: const Text(
@@ -983,7 +983,7 @@ class QuickMarkUndeliveredScreen extends GetView<QuickFlowController> {
                   ),
                   const SizedBox(height: 10),
                   TextButton.icon(
-                    onPressed: () {},
+                    onPressed: () => controller.sendRtSellerOtp(),
                     icon: const Icon(Icons.send_rounded,
                         size: 16, color: AppColors.primary),
                     label: const Text(
@@ -1509,7 +1509,7 @@ class QuickMarkUndeliveredScreen extends GetView<QuickFlowController> {
                   const SizedBox(height: 10),
                   Center(
                     child: TextButton.icon(
-                      onPressed: () {},
+                      onPressed: () => controller.resendInnerCustomerCancelOtp(),
                       icon: const Icon(Icons.send_rounded,
                           size: 16, color: AppColors.primary),
                       label: const Text(

@@ -1252,6 +1252,33 @@ class QuickFlowController extends BaseController {
     return false;
   }
 
+  /// Re-sends the return-to-failed OTP (the reason is already saved when the
+  /// OTP step is first opened, so only the OTP request is repeated here).
+  Future<void> resendInnerCustomerCancelOtp() async {
+    try {
+      showLoading();
+      final orderId = _getOrderId();
+      final token = _sessionService.token;
+      if (orderId != null && token != null) {
+        final response = await _shipmentRepository.sendQuickReturnToFailedOtp(
+          orderId: orderId,
+          token: token,
+        );
+        if (response['success'] == true) {
+          Get.snackbar(
+              "Success", response['message'] ?? "OTP sent successfully");
+        } else {
+          handleError(response['message'] ??
+              "OTP could not be sent. Please try again.");
+        }
+      }
+    } catch (e) {
+      handleError("Error sending OTP: $e");
+    } finally {
+      hideLoading();
+    }
+  }
+
   Future<void> verifyInnerCustomerCancelOtp() async {
     try {
       showLoading();
@@ -2370,13 +2397,16 @@ class QuickFlowController extends BaseController {
     final Uri url =
         Uri.parse("https://www.google.com/maps/search/?api=1&query=$lat,$long");
     try {
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
-      } else {
+      // Don't gate on canLaunchUrl: it returns false on Android 11+ when
+      // package visibility hides the maps app. Just try to launch.
+      final launched =
+          await launchUrl(url, mode: LaunchMode.externalApplication);
+      if (!launched) {
         Get.snackbar("Error", "Could not launch maps");
       }
     } catch (e) {
       debugPrint("Error launching maps: $e");
+      Get.snackbar("Error", "Could not launch maps");
     }
   }
 
