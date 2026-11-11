@@ -358,21 +358,6 @@ class QuickFvdDetailsView extends GetView<QuickFlowController> {
           ),
           child: Column(
             children: [
-              _buildSummaryRow('Order Value =', '₹ $itemsTotal'),
-              _buildSummaryRow('Delivery charges =', '₹ $deliveryCharge'),
-              _buildSummaryRow(
-                  'Packaging & handling Fees =', '₹ $packagingFees'),
-              _buildSummaryRow('Platform Fees =', '₹ $platformFees'),
-              _buildSummaryRow('Other charges =', '₹ $otherCharges'),
-              _buildSummaryRow('Discount =', '- ₹ $discount',
-                  valueColor: Colors.red),
-              const Divider(height: 20),
-              _buildSummaryRow(
-                'Total Order amount =',
-                '₹ $totalAmount',
-                isBold: true,
-              ),
-              const SizedBox(height: 12),
               _buildSummaryRow(
                 'Payment Mode -',
                 (payment['payment_method'] != null)
@@ -380,24 +365,9 @@ class QuickFvdDetailsView extends GetView<QuickFlowController> {
                     : '-',
               ),
               _buildSummaryRow(
-                'Payment Status -',
-                (payment['payment_status'] != null)
-                    ? payment['payment_status'].toString().toUpperCase()
-                    : '-',
-                valueColor:
-                    (payment['payment_status']?.toString().toLowerCase() ==
-                            'paid')
-                        ? Colors.green
-                        : (payment['payment_status'] != null
-                            ? Colors.orange
-                            : Colors.blueGrey),
-              ),
-              const Divider(height: 20),
-              _buildSummaryRow(
-                'Outstanding Amount =',
-                '₹ $outstanding',
+                'Order Amount =',
+                '₹ $totalAmount',
                 isBold: true,
-                valueColor: outstanding > 0 ? Colors.red : Colors.green,
               ),
             ],
           ),
