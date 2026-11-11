@@ -1078,7 +1078,7 @@ class ShipmentRepository {
     required String token,
   }) async {
     final endpoint =
-        '${AppConstants.quickOrderDetailsEndpoint}?order_id=$orderId';
+        '/delivery/quick/order-details?order_id=$orderId';
     return await apiClient.get(
       endpoint,
       token: token,
