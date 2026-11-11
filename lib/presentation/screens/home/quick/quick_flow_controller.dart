@@ -1938,8 +1938,7 @@ class QuickFlowController extends BaseController {
 
           if (paymentStatus == 'paid' ||
               paymentStatus == 'success' ||
-              orderStatus == 'delivered' ||
-              paymentStatus == 'unknown') {
+              orderStatus == 'delivered') {
             isFvdPaymentVerified.value = true;
             Get.snackbar("Success",
                 response['message'] ?? "Payment verified successfully!");
@@ -1949,8 +1948,9 @@ class QuickFlowController extends BaseController {
                   "Pending", "Payment not yet received. Please try again.");
               isFvdPaymentVerified.value = false;
             } else {
-              isFvdPaymentVerified.value = true;
-              Get.snackbar("Success", "Payment status: $paymentStatus");
+              isFvdPaymentVerified.value = false;
+              Get.snackbar("Payment pending",
+                  "Payment not confirmed yet (status: $paymentStatus).");
             }
           }
         } else {
@@ -2174,6 +2174,11 @@ class QuickFlowController extends BaseController {
         }
       }
     } else if (currentStep.value == QuickStep.fvdPaymentDetails) {
+      if (!isFvdPaymentVerified.value) {
+        Get.snackbar("Payment pending",
+            "Please complete the UPI payment and tap CHECK PAYMENT first.");
+        return;
+      }
       currentStep.value = QuickStep.fvdImages;
     } else if (currentStep.value == QuickStep.fvdImages) {
       if (isFvdImageStepValid) {
