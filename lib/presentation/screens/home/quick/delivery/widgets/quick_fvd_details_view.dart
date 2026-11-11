@@ -319,7 +319,7 @@ class QuickFvdDetailsView extends GetView<QuickFlowController> {
           charge['is_discount'] == true || charge['is_discount'] == 1;
 
       if (isDisc) {
-        discount += amount;
+        discount += amount.abs();
       } else {
         final type = (charge['type'] ?? "").toString().toLowerCase();
 
