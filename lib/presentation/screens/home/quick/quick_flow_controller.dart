@@ -221,6 +221,32 @@ class QuickFlowController extends BaseController {
   bool get isFvdImageStepValid => fvdImages[0] != null && fvdImages[1] != null;
   bool get isFvdOptionsStepValid => fvdSelectedRecipient.value.isNotEmpty;
 
+  /// Sum of the order item prices (unit price x quantity), or null when the
+  /// order carries no items. Payment details show this - no fees on top.
+  double? get itemsPriceTotal {
+    final data = selectedOrder.value ?? {};
+    final order = data['order'];
+    final raw = data['items'] ??
+        data['order_items'] ??
+        (order is Map ? order['items'] : null);
+    if (raw is! List || raw.isEmpty) return null;
+    double total = 0;
+    for (final item in raw) {
+      if (item is! Map) continue;
+      final price = double.tryParse(
+              (item['unit_price'] ?? item['price'] ?? item['item_total'] ?? 0)
+                  .toString()) ??
+          0;
+      final qty = int.tryParse(
+              (item['quantity'] ?? item['qty'] ?? 1).toString()) ??
+          1;
+      total += (item['unit_price'] ?? item['price']) != null
+          ? price * qty
+          : price;
+    }
+    return total;
+  }
+
   bool get isCod {
     final order = selectedOrder.value ?? {};
     final orderData = order['order'] ?? {};

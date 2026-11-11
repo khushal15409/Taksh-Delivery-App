@@ -352,7 +352,7 @@ class QuickDetailsScreen extends GetView<QuickFlowController> {
           ),
           _buildSummaryRow(
             'Order Amount =',
-            '₹ $totalAmount',
+            '₹ ${controller.itemsPriceTotal ?? totalAmount}',
             isBold: true,
           ),
         ],
