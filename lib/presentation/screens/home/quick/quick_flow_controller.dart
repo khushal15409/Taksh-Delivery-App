@@ -2170,9 +2170,11 @@ class QuickFlowController extends BaseController {
       if (isFvdOptionsStepValid) {
         if (fvdSelectedRecipient.value == 'customer') {
           final customer = selectedOrder.value?['customer'] ?? {};
-          fvdRecipientNameController.text = customer['name']?.toString() ?? "";
+          // The delivery address contact (name + mobile of the same person); older servers only send name/mobile.
+          fvdRecipientNameController.text =
+              (customer['recipient_name'] ?? customer['name'])?.toString() ?? "";
           fvdRecipientPhoneController.text =
-              customer['mobile']?.toString() ?? "";
+              (customer['recipient_mobile'] ?? customer['mobile'])?.toString() ?? "";
           fvdNameText.value = fvdRecipientNameController.text;
           fvdPhoneText.value = fvdRecipientPhoneController.text;
         } else {
