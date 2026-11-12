@@ -6,6 +6,8 @@ import 'package:delivery_boy/data/models/order_model.dart';
 import './summary_list_controller.dart';
 import '../../../../core/utils/external_actions.dart';
 
+const bool kShowUpdateStatusButton = false;
+
 class SummaryDetailScreen extends GetView<SummaryDetailController> {
   const SummaryDetailScreen({super.key});
 
@@ -102,7 +104,9 @@ class SummaryDetailScreen extends GetView<SummaryDetailController> {
                 ),
               ),
             ),
-            if (['FAILED', 'CANCELLED', 'UNDELIVERED', 'DISPATCH', 'PENDING'].contains(controller.listStatus))
+            // UPDATE STATUS is hidden for now; set kShowUpdateStatusButton to true to bring it back.
+            if (kShowUpdateStatusButton &&
+                ['FAILED', 'CANCELLED', 'UNDELIVERED', 'DISPATCH', 'PENDING'].contains(controller.listStatus))
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SizedBox(

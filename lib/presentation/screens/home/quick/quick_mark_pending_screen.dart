@@ -6,6 +6,7 @@ import 'package:pinput/pinput.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:delivery_boy/presentation/screens/home/quick/quick_flow_controller.dart';
 import 'package:delivery_boy/core/constants/app_colors.dart';
+import 'package:delivery_boy/presentation/widgets/otp_send_button.dart';
 import 'package:delivery_boy/presentation/widgets/loading_overlay.dart';
 
 class QuickMarkPendingScreen extends GetView<QuickFlowController> {
@@ -877,19 +878,10 @@ class QuickMarkPendingScreen extends GetView<QuickFlowController> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                TextButton.icon(
-                  onPressed: () => controller.sendCustomerCancelOtp(),
-                  icon: const Icon(Icons.send_rounded,
-                      size: 16, color: AppColors.primary),
-                  label: const Text(
-                    "SEND OTP",
-                    style: TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
-                  ),
-                ),
+                OtpSendButton(
+ onSend: () => controller.sendCustomerCancelOtp(),
+ fontSize: 13,
+ ),
                 const SizedBox(height: 10),
                 const SizedBox(height: 30),
                 const Text(
@@ -1101,19 +1093,10 @@ class QuickMarkPendingScreen extends GetView<QuickFlowController> {
                 ),
                 const SizedBox(height: 10),
                 Center(
-                  child: TextButton.icon(
-                    onPressed: () => controller.sendPickupCancelOtp(),
-                    icon: const Icon(Icons.send_rounded,
-                        size: 16, color: AppColors.primary),
-                    label: const Text(
-                      "SEND OTP",
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
+                  child: OtpSendButton(
+ onSend: () => controller.sendPickupCancelOtp(),
+ fontSize: 13,
+ ),
                 ),
                 const SizedBox(height: 25),
                 const Center(

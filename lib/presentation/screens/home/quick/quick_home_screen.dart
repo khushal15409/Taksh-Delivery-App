@@ -254,8 +254,21 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
         .trim()
         .toLowerCase();
 
+    // The backend tells how the customer chose to pay (cod / prepaid); trust it before guessing.
+    final paymentMode = (order['payment_mode'] ??
+            orderData['payment_mode'] ??
+            paymentData['payment_mode'] ??
+            '')
+        .toString()
+        .trim()
+        .toLowerCase();
+
     bool isCod = false;
-    if (paymentStatus == 'paid' ||
+    if (paymentMode == 'cod') {
+      isCod = true;
+    } else if (paymentMode == 'prepaid') {
+      isCod = false;
+    } else if (paymentStatus == 'paid' ||
         paymentStatus == 'success' ||
         paymentStatus == 'online') {
       isCod = false;
@@ -277,8 +290,7 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
       }
     }
 
-    final paymentAmount = order['items_total'] ??
-        order['total_payable'] ??
+    final paymentAmount = order['total_payable'] ??
         order['total_amount'] ??
         paymentData['amount'] ??
         '0.00';

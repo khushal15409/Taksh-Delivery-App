@@ -366,7 +366,7 @@ class QuickFvdDetailsView extends GetView<QuickFlowController> {
               ),
               _buildSummaryRow(
                 'Order Amount =',
-                '₹ ${controller.itemsPriceTotal ?? totalAmount}',
+                '₹ $totalAmount',
                 isBold: true,
               ),
             ],

@@ -221,36 +221,20 @@ class QuickFlowController extends BaseController {
   bool get isFvdImageStepValid => fvdImages[0] != null && fvdImages[1] != null;
   bool get isFvdOptionsStepValid => fvdSelectedRecipient.value.isNotEmpty;
 
-  /// Sum of the order item prices (unit price x quantity), or null when the
-  /// order carries no items. Payment details show this - no fees on top.
-  double? get itemsPriceTotal {
-    final data = selectedOrder.value ?? {};
-    final order = data['order'];
-    final raw = data['items'] ??
-        data['order_items'] ??
-        (order is Map ? order['items'] : null);
-    if (raw is! List || raw.isEmpty) return null;
-    double total = 0;
-    for (final item in raw) {
-      if (item is! Map) continue;
-      final price = double.tryParse(
-              (item['unit_price'] ?? item['price'] ?? item['item_total'] ?? 0)
-                  .toString()) ??
-          0;
-      final qty = int.tryParse(
-              (item['quantity'] ?? item['qty'] ?? 1).toString()) ??
-          1;
-      total += (item['unit_price'] ?? item['price']) != null
-          ? price * qty
-          : price;
-    }
-    return total;
-  }
-
   bool get isCod {
     final order = selectedOrder.value ?? {};
     final orderData = order['order'] ?? {};
     final paymentData = order['payment'] ?? {};
+
+    final mode = (order['payment_mode'] ??
+            orderData['payment_mode'] ??
+            paymentData['payment_mode'] ??
+            '')
+        .toString()
+        .trim()
+        .toLowerCase();
+    if (mode == 'cod') return true;
+    if (mode == 'prepaid') return false;
 
     final status = (order['payment_status'] ??
             orderData['payment_status'] ??
@@ -1280,7 +1264,7 @@ class QuickFlowController extends BaseController {
 
   /// Re-sends the return-to-failed OTP (the reason is already saved when the
   /// OTP step is first opened, so only the OTP request is repeated here).
-  Future<void> resendInnerCustomerCancelOtp() async {
+  Future<bool> resendInnerCustomerCancelOtp() async {
     try {
       showLoading();
       final orderId = _getOrderId();
@@ -1293,6 +1277,7 @@ class QuickFlowController extends BaseController {
         if (response['success'] == true) {
           Get.snackbar(
               "Success", response['message'] ?? "OTP sent successfully");
+          return true;
         } else {
           handleError(response['message'] ??
               "OTP could not be sent. Please try again.");
@@ -1303,6 +1288,7 @@ class QuickFlowController extends BaseController {
     } finally {
       hideLoading();
     }
+    return false;
   }
 
   Future<void> verifyInnerCustomerCancelOtp() async {
@@ -2010,6 +1996,42 @@ class QuickFlowController extends BaseController {
     Get.toNamed(AppRoutes.quickFvd);
   }
 
+  /// Resend the delivery OTP from the OTP screen. Returns true when it was sent.
+  Future<bool> resendDeliveryOtp() async {
+    try {
+      showLoading();
+      final token = _sessionService.token;
+      if (token != null) {
+        final order = selectedOrder.value;
+        dynamic rawId = order?['order_id'] ?? order?['id'];
+        if (rawId == null && order?['order'] != null) {
+          rawId = order?['order']?['id'] ?? order?['order']?['order_id'];
+        }
+        final String orderId =
+            (rawId is num) ? rawId.toInt().toString() : rawId.toString();
+
+        final response = await _shipmentRepository.sendQuickDeliverOtp(
+          orderId: orderId,
+          token: token,
+        );
+
+        if (response['success'] == true) {
+          Get.snackbar("Success",
+              response['message'] ?? "Delivery OTP sent successfully");
+          return true;
+        }
+        Get.snackbar("Error",
+            response['message'] ?? "OTP could not be sent. Please try again.");
+      }
+    } catch (e) {
+      debugPrint("Error resending delivery otp: $e");
+      Get.snackbar("Error", "Failed to send OTP. Please try again.");
+    } finally {
+      hideLoading();
+    }
+    return false;
+  }
+
   Future<void> _sendDeliveryOtp() async {
     try {
       showLoading();
@@ -2441,7 +2463,7 @@ class QuickFlowController extends BaseController {
     }
   }
 
-  Future<void> sendRtSellerOtp() async {
+  Future<bool> sendRtSellerOtp() async {
     try {
       showLoading();
       final orderId = _getOrderId();
@@ -2454,6 +2476,7 @@ class QuickFlowController extends BaseController {
         if (response['success'] == true) {
           Get.snackbar(
               "Success", response['message'] ?? "OTP sent successfully");
+          return true;
         } else {
           handleError(response['message'] ?? "OTP could not be sent. Please try again.");
         }
@@ -2463,6 +2486,7 @@ class QuickFlowController extends BaseController {
     } finally {
       hideLoading();
     }
+    return false;
   }
 
   Future<void> verifyRtSellerOtp() async {

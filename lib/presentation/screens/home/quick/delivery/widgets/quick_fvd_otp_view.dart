@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import '../../quick_flow_controller.dart';
 import 'package:delivery_boy/core/constants/app_colors.dart';
+import 'package:delivery_boy/presentation/widgets/otp_send_button.dart';
 import 'package:delivery_boy/core/constants/app_strings.dart';
 
 class DeliveryOtpView extends GetView<QuickFlowController> {
@@ -62,19 +63,10 @@ class DeliveryOtpView extends GetView<QuickFlowController> {
                 ),
                 const SizedBox(height: 10),
                 Center(
-                  child: TextButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.send_rounded,
-                        size: 16, color: AppColors.primary),
-                    label: const Text(
-                      "SEND OTP",
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
+                  child: OtpSendButton(
+ onSend: () => controller.resendDeliveryOtp(),
+ fontSize: 13,
+ ),
                 ),
                 const SizedBox(height: 30),
                 Obx(() => controller.isFvdOtpVerified.value

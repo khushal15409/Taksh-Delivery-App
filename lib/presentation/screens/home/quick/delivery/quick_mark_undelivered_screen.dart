@@ -4,6 +4,7 @@ import 'package:pinput/pinput.dart';
 import 'dart:io';
 import 'package:delivery_boy/presentation/screens/home/quick/quick_flow_controller.dart';
 import 'package:delivery_boy/core/constants/app_colors.dart';
+import 'package:delivery_boy/presentation/widgets/otp_send_button.dart';
 import 'package:delivery_boy/presentation/widgets/loading_overlay.dart';
 
 class QuickMarkUndeliveredScreen extends GetView<QuickFlowController> {
@@ -226,19 +227,10 @@ class QuickMarkUndeliveredScreen extends GetView<QuickFlowController> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  TextButton.icon(
-                    onPressed: () => controller.sendCustomerCancelOtp(),
-                    icon: const Icon(Icons.send_rounded,
-                        size: 16, color: AppColors.primary),
-                    label: const Text(
-                      "SEND OTP",
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
+                  OtpSendButton(
+ onSend: () => controller.sendCustomerCancelOtp(),
+ fontSize: 16,
+ ),
                 ],
               ),
             ),
@@ -558,19 +550,10 @@ class QuickMarkUndeliveredScreen extends GetView<QuickFlowController> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  TextButton.icon(
-                    onPressed: () => controller.sendCustomerCancelOtp(),
-                    icon: const Icon(Icons.send_rounded,
-                        size: 16, color: AppColors.primary),
-                    label: const Text(
-                      "SEND OTP",
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
+                  OtpSendButton(
+ onSend: () => controller.sendCustomerCancelOtp(),
+ fontSize: 16,
+ ),
                   const SizedBox(height: 40),
                   const Text(
                     "TO VIEW THE OTP, CLICK ON THIS ORDER IN THE MY ORDER SECTION OF THE CUSTOMER MOB. APPLICATION AND VIEW THE OTP",
@@ -964,7 +947,13 @@ class QuickMarkUndeliveredScreen extends GetView<QuickFlowController> {
                   const Text("VERIFY OTP",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 12),
+                  const Text(
+                    "The 4-digit OTP is sent to the seller's mobile number.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 13, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 28),
                   Pinput(
                     length: 4,
                     controller: controller.rtSellerOtpController,
@@ -982,19 +971,10 @@ class QuickMarkUndeliveredScreen extends GetView<QuickFlowController> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  TextButton.icon(
-                    onPressed: () => controller.sendRtSellerOtp(),
-                    icon: const Icon(Icons.send_rounded,
-                        size: 16, color: AppColors.primary),
-                    label: const Text(
-                      "SEND OTP",
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
+                  OtpSendButton(
+ onSend: () => controller.sendRtSellerOtp(),
+ fontSize: 16,
+ ),
                   const SizedBox(height: 40),
                   const Text(
                     "PLEASE ENTER THE OTP TO PROCEED WITH RETURN TO SELLER",
@@ -1508,19 +1488,10 @@ class QuickMarkUndeliveredScreen extends GetView<QuickFlowController> {
                   ),
                   const SizedBox(height: 10),
                   Center(
-                    child: TextButton.icon(
-                      onPressed: () => controller.resendInnerCustomerCancelOtp(),
-                      icon: const Icon(Icons.send_rounded,
-                          size: 16, color: AppColors.primary),
-                      label: const Text(
-                        "SEND OTP",
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
+                    child: OtpSendButton(
+ onSend: () => controller.resendInnerCustomerCancelOtp(),
+ fontSize: 13,
+ ),
                   ),
                   const SizedBox(height: 30),
                   const Center(
