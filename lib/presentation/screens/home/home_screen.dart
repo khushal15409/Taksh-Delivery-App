@@ -277,6 +277,7 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const OnlineSwitch(),
                   const NotificationBell(),
                   IconButton(
                     icon: const Icon(Icons.refresh_rounded,

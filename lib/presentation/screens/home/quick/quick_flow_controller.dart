@@ -8,6 +8,9 @@ import '../home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery_boy/core/utils/friendly_message.dart';
 import 'package:delivery_boy/core/services/push_notification_service.dart';
+import 'package:delivery_boy/core/services/online_status_service.dart';
+import 'package:delivery_boy/core/network/api_client.dart';
+import 'package:delivery_boy/core/constants/app_constants.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -1626,6 +1629,15 @@ class QuickFlowController extends BaseController {
       onConfirm: () async {
         // Stop pushes for this device and end the session, then go to the login screen.
         await PushNotificationService.instance.unregisterDevice();
+        // Tell the server so the rider goes offline and the token is revoked.
+        final token = _sessionService.token;
+        if (token != null) {
+          try {
+            await Get.find<ApiClient>()
+                .post(AppConstants.logoutEndpoint, token: token);
+          } catch (_) {}
+        }
+        OnlineStatusService.instance.reset();
         _sessionService.clearSession();
         Get.offAllNamed(AppRoutes.login);
       },

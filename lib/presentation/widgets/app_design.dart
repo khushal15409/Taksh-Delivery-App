@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
+import '../../core/services/online_status_service.dart';
 import '../../core/services/push_notification_service.dart';
 
 /// Blue header with the skyline background used by every main screen.
@@ -375,6 +376,73 @@ class NotificationBell extends StatelessWidget {
                   ),
                 ),
               ),
+          ],
+        ),
+      );
+    });
+  }
+}
+
+/// Compact Online / Offline switch for the headers, shown next to the notification bell.
+class OnlineSwitch extends StatefulWidget {
+  const OnlineSwitch({super.key});
+
+  @override
+  State<OnlineSwitch> createState() => _OnlineSwitchState();
+}
+
+class _OnlineSwitchState extends State<OnlineSwitch> {
+  late final OnlineStatusService _service = OnlineStatusService.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _service.refresh();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final online = _service.isOnline.value;
+      final busy = _service.isBusy.value;
+      return Container(
+        padding: const EdgeInsets.only(left: 8, right: 0),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white38),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: online ? const Color(0xFF4ADE80) : Colors.white54,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 5),
+            Text(
+              online ? 'Online' : 'Offline',
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700),
+            ),
+            Transform.scale(
+              scale: 0.7,
+              child: Switch(
+                value: online,
+                onChanged: busy ? null : _service.setOnline,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                activeColor: Colors.white,
+                activeTrackColor: const Color(0xFF22C55E),
+                inactiveThumbColor: Colors.white,
+                inactiveTrackColor: Colors.white30,
+              ),
+            ),
           ],
         ),
       );

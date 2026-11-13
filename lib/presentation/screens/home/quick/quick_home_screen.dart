@@ -118,6 +118,7 @@ class QuickHomeScreen extends GetView<QuickFlowController> {
                           ],
                         )),
                   ),
+                  const OnlineSwitch(),
                   const NotificationBell(),
                   GestureDetector(
                     onTap: () => controller.goToProfile(),

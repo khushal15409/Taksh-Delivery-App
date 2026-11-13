@@ -11,6 +11,7 @@ import 'package:delivery_boy/core/constants/app_routes.dart';
 
 import 'package:delivery_boy/core/services/session_service.dart';
 import 'package:delivery_boy/core/services/push_notification_service.dart';
+import 'package:delivery_boy/core/services/online_status_service.dart';
 
 class SettingsController extends BaseController {
   final ProfileRepository _profileRepository = Get.find<ProfileRepository>();
@@ -74,11 +75,13 @@ class SettingsController extends BaseController {
           if (token != null) {
             await _authRepository.logout(token);
           }
+          OnlineStatusService.instance.reset();
           _sessionService.clearSession();
           hideLoading();
           Get.offAllNamed(AppRoutes.login);
         } catch (e) {
           // Even if API fails, clear session locally for safety
+          OnlineStatusService.instance.reset();
           _sessionService.clearSession();
           hideLoading();
           Get.offAllNamed(AppRoutes.login);

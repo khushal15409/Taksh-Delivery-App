@@ -11,6 +11,8 @@ class AppConstants {
   static const String profileEndpoint = '/delivery-man/profile';
   static const String profilePictureEndpoint = '/delivery-man/profile/picture';
   static const String logoutEndpoint = '/delivery-man/logout';
+  static const String onlineStatusEndpoint = '/delivery-man/online-status';
+  static const String heartbeatEndpoint = '/delivery-man/heartbeat';
 
   // Push notifications + notification inbox
   static const String deviceTokenEndpoint = '/delivery-man/device-token';
