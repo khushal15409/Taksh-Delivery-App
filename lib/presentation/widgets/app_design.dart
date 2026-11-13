@@ -400,13 +400,46 @@ class _OnlineSwitchState extends State<OnlineSwitch> {
     _service.refresh();
   }
 
+  /// Asks first; the status is only sent to the server after the rider confirms.
+  /// The switch itself never moves until the server accepted the change.
+  Future<void> _confirmAndSet(bool value) async {
+    final ok = await Get.dialog<bool>(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(value ? 'Go Online?' : 'Go Offline?'),
+        content: Text(value
+            ? 'You will start receiving new orders.'
+            : 'You will stop receiving new orders.'),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: const Text('CANCEL'),
+          ),
+          ElevatedButton(
+            onPressed: () => Get.back(result: true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  value ? const Color(0xFF22C55E) : AppTheme.danger,
+            ),
+            child: Text(value ? 'GO ONLINE' : 'GO OFFLINE',
+                style: const TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+      barrierDismissible: true,
+    );
+    if (ok == true) {
+      await _service.setOnline(value);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       final online = _service.isOnline.value;
       final busy = _service.isBusy.value;
       return Container(
-        padding: const EdgeInsets.only(left: 8, right: 0),
+        padding: const EdgeInsets.only(left: 10, right: 2),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.2),
           borderRadius: BorderRadius.circular(20),
@@ -423,24 +456,29 @@ class _OnlineSwitchState extends State<OnlineSwitch> {
                 shape: BoxShape.circle,
               ),
             ),
-            const SizedBox(width: 5),
+            const SizedBox(width: 6),
             Text(
               online ? 'Online' : 'Offline',
               style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: FontWeight.w700),
             ),
-            Transform.scale(
-              scale: 0.7,
-              child: Switch(
-                value: online,
-                onChanged: busy ? null : _service.setOnline,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                activeColor: Colors.white,
-                activeTrackColor: const Color(0xFF22C55E),
-                inactiveThumbColor: Colors.white,
-                inactiveTrackColor: Colors.white30,
+            const SizedBox(width: 2),
+            SizedBox(
+              width: 46,
+              height: 30,
+              child: Transform.scale(
+                scale: 0.75,
+                child: Switch(
+                  value: online,
+                  onChanged: busy ? null : _confirmAndSet,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  activeColor: Colors.white,
+                  activeTrackColor: const Color(0xFF22C55E),
+                  inactiveThumbColor: Colors.white,
+                  inactiveTrackColor: Colors.white30,
+                ),
               ),
             ),
           ],
